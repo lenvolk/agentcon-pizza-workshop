@@ -1,0 +1,1 @@
+# Setup Azure AI Foundry
