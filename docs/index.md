@@ -1,6 +1,6 @@
 # Azure AI Foundry Agent Workshop 🚀  
 
-![](banner.png)
+![](./public/banner.png)
 
 ## Workshop Overview  
 

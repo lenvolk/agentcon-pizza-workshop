@@ -4,6 +4,10 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Pizza Workshop",
   description: "Contoso Pizza",
+  ignoreDeadLinks: true,
+  head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
+  lang: 'en-US',
+  lastUpdated: true,  
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
