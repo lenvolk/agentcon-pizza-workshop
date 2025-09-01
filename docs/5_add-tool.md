@@ -1,4 +1,4 @@
-# Tool Calling — Making Your Agent Act
+# Tool Calling - Making Your Agent Act
 
 In the previous chapters you gave your agent instructions and grounded it in your own data with File Search (RAG).  
 Now, let’s enable your agent to **take actions** by calling **tools** — small, well-defined functions your agent can invoke to perform tasks (e.g., calculations, lookups, API calls).

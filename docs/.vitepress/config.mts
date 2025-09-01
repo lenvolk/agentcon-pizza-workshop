@@ -10,9 +10,6 @@ export default defineConfig({
   lastUpdated: true,  
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-    nav: [
-      { text: 'Workshop', link: '/' }
-    ],
 
     sidebar: [
       { 
@@ -40,11 +37,16 @@ export default defineConfig({
           { text: '5. Add estimation tool', link: '/5_add-tool' },
           { text: '6. Integrating MCP', link: '/6_add-mcp' },
         ]
-      }
+      },
+      { text: 'License', link: '/license' },
+      { text: '✉️ Contact & Feedback', link: '/contact-feedback' }
     ],
-
     socialLinks: [
       { icon: 'github', link: 'https://github.com/GlobalAICommunity/agentcon-pizza-workshop' }
-    ]
-  }
+    ],
+    search: {
+      provider: 'local'
+    }
+  },
+  
 })
