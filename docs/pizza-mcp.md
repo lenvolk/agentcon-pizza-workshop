@@ -1,6 +1,13 @@
 
 # Pizza MCP server
 
+
+| Endpoint | Url |
+| -- | -- |
+| Get Order Key | https://nice-dune-07e53ec0f.2.azurestaticapps.net/
+| Dashboard | https://nice-dune-07e53ec0f.2.azurestaticapps.net/
+| API Endpoint | https://func-pizza-api-sc6u2typoxngc.azurewebsites.net
+
 ## Overview
 
 This is the Pizza MCP server, exposing the Pizza API as a Model Context Protocol (MCP) server. The MCP server allows LLMs to interact with the pizza ordering process through MCP tools.

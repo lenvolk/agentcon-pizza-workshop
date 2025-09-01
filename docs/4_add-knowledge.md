@@ -1,4 +1,4 @@
-# Chapter 3: Adding Knowledge with File Search  
+# Adding Knowledge with File Search  
 
 In the previous chapters, you created a basic agent and gave it instructions through a system prompt.  
 Now it’s time to **make your agent smarter** by grounding it in **your own data**.  
