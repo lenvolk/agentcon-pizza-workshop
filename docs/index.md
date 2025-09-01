@@ -13,7 +13,7 @@ By the end of the workshop, you’ll have built your own **Contoso PizzaBot**, a
 - Calling **custom tools** like a pizza calculator  
 - Integrating with an **MCP server** for live menu and order management  
 
-## Agenda (120 minutes total)  
+## Agenda
 
 - **Welcome & Setup**  
   Introduction, workshop goals, and Azure subscription setup  
@@ -39,8 +39,8 @@ By the end of the workshop, you’ll have built your own **Contoso PizzaBot**, a
 ## What You’ll Need  
 
 - A browser and access to the [Azure Portal](https://portal.azure.com)  
-- Your provided Azure subscription or your own for the workshop  
-- Python 3.10+ installed locally  
+- An [Azure subscription](./get-azure) provided or use your own
+- A [developement environment](./dev-environment) with Python 3.10+ installed  
 - Familiarity with Python basics (no deep AI background required!)  
 
 ## Workshop Goal  

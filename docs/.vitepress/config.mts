@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Pizza Workshop",
+  title: "🍕 Contoso Pizza Workshop",
   description: "Contoso Pizza",
   ignoreDeadLinks: true,
   head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
@@ -15,13 +15,19 @@ export default defineConfig({
     ],
 
     sidebar: [
-      { text: 'Welcome', link: '/' },
+      { 
+        text: 'Welcome',
+        items: [
+          { text: 'Get started', link: '/index' },
+          { text: 'About the workshop', link: '/about' },
+        ]
+      },
       {
         text: 'Setup & Resources',
         items: [
-          { text: 'Get Azure', link: '/get-azure' },
-          { text: 'Dev environment', link: '/dev-environment' },
-          { text: 'Pizza MCP', link: '/pizza-mcp' }
+          { text: 'Get an Azure Subscriber', link: '/get-azure' },
+          { text: 'Setup your dev environment', link: '/dev-environment' },
+          { text: 'Pizza MCP server', link: '/pizza-mcp' }
         ]
       },
       {

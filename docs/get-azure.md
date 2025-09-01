@@ -1,7 +1,11 @@
 # Get an Azure Subscription
 
-In case you do not have an Azure Subscription you can use to complete the challenges, you can follow the instructions below and get an Azure Subscription with 20$ credits valid untill the end of week.
+In case you do not have an Azure Subscription you can use to complete the challenges, 
+you can follow the instructions below and get an Azure Subscription with 10$ credits valid for 5 days.
 
+::: tip NOTE
+This offer only applies for events provided by the Global AI Community on events like AgentCon
+:::
 
 ## Step 1 - Request subscription
 - Navigate to: [https://aka.ms/JoinEduLab](https://aka.ms/JoinEduLab)
