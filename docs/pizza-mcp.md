@@ -1,12 +1,15 @@
 
 # Pizza MCP server
 
+For this workshop we use the Open Source example [Pizza MCP Agent](https://github.com/Azure-Samples/pizza-mcp-agents).
 
-| Endpoint | Url |
-| -- | -- |
-| Get Order Key | https://nice-dune-07e53ec0f.2.azurestaticapps.net/
-| Dashboard | https://nice-dune-07e53ec0f.2.azurestaticapps.net/
-| API Endpoint | https://func-pizza-api-sc6u2typoxngc.azurewebsites.net
+This project demonstrates how to build AI agents that can interact with real-world APIs using the Model Context Protocol (MCP). It features a complete pizza ordering system with a serverless API, web interfaces, and an MCP server that enables AI agents to browse menus, place orders, and track order status.
+
+The system consists of multiple interconnected services:
+- **Pizza API:** Serverless API for pizza ordering
+- **Pizza MCP server:** MCP server enabling AI agent interactions
+- **Pizza web app:** Live order dashboard, showing real-time pizza orders status
+- **Registration system:** User registration for accessing the pizza ordering system
 
 ## Overview
 

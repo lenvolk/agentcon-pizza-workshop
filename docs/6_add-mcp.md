@@ -39,7 +39,7 @@ Add the following block to your `agent.py` (after you’ve initialized the `proj
 ```python
 mcp_tool = McpTool(
     server_label="contoso_pizza",
-    server_url="<INSERT THE MCP URL HERE>",
+    server_url="<!--@include: ./variables/mcp-url.md-->",
     allowed_tools=[
         "get_pizzas",
         "get_pizza_by_id",
@@ -57,7 +57,7 @@ mcp_tool.set_approval_mode("never")
 
 ### Notes
 - **server_label**: a friendly name used in logs/telemetry.
-- **server_url**: the MCP server endpoint (replace `<INSERT THE MCP URL HERE>` with the actual URL).
+- **server_url**: the MCP server endpoint (replace <!--@include: ./variables/mcp-url.md-->` with the actual URL).
 - **allowed_tools**: a safety allowlist—only these tools are callable by the agent.
 - **approval mode**: set to `"never"` here (no human approval prompts). Consider stricter modes for production.
 

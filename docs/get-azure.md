@@ -12,7 +12,8 @@ This offer only applies for events provided by the Global AI Community on events
 - Sign in with a Microsoft or GitHub account
 
 ![Azure Classroom Signup Screenshot](./public/azure-classroom/001.png)
-- Ask your coach to enter the `invite code` and `click redeem`
+
+- Enter <!--@include: ./variables/azure-code.md--> the `invite code` and `click redeem`
 - Wait for the email below to arrive
 
 ## Step 2 - Activate subscription

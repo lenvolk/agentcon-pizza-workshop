@@ -45,7 +45,7 @@ These imports bring in the Azure SDK, environment handling, and helper classes:
 import os
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
-from azure.ai.agents.models import MessageRole
+from azure.ai.agents.models import MessageRole, FilePurpose
 from dotenv import load_dotenv
 ```
 
@@ -142,7 +142,23 @@ while True:
 The agent processes the conversation thread and generates a response.  
 
 ```python
-    run = project_client.agents.runs.create_and_process(
+while True:
+
+    # Get the user input
+    user_input = input("You: ")
+
+    # Break out of the loop
+    if user_input.lower() in ["exit", "quit"]:
+        break
+
+    # Add a message to the thread
+    message = project_client.agents.messages.create(
+        thread_id=thread.id,
+        role=MessageRole.USER, 
+        content=user_input
+    )
+
+    run = project_client.agents.runs.create_and_process(  # [!code focus:4]
         thread_id=thread.id, 
         agent_id=agent.id
     )
@@ -155,9 +171,30 @@ The agent processes the conversation thread and generates a response.
 This retrieves all messages from the thread and prints the agent’s most recent response.  
 
 ```python
-    messages = project_client.agents.messages.list(thread_id=thread.id)
-    first_message = next(iter(messages), None)
-    if first_message:
+while True:
+
+    # Get the user input
+    user_input = input("You: ")
+
+    # Break out of the loop
+    if user_input.lower() in ["exit", "quit"]:
+        break
+
+    # Add a message to the thread
+    message = project_client.agents.messages.create(
+        thread_id=thread.id,
+        role=MessageRole.USER, 
+        content=user_input
+    )
+
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, 
+        agent_id=agent.id
+    )    
+
+    messages = project_client.agents.messages.list(thread_id=thread.id)  # [!code focus:4]
+    first_message = next(iter(messages), None) 
+    if first_message: 
         print(next((item["text"]["value"] for item in first_message.content if item.get("type") == "text"), "")) 
 ```
 
