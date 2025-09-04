@@ -103,6 +103,8 @@ agent = project_client.agents.create_agent(
     model="gpt-4o",
     name="my-agent",
     instructions=open("instructions.txt").read(),
+    top_p=0.7,
+    temperature=0.7,
     toolset=toolset  # Add the toolset to the agent
 )
 print(f"Created agent, ID: {agent.id}")

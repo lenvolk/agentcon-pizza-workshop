@@ -45,7 +45,7 @@ These imports bring in the Azure SDK, environment handling, and helper classes:
 import os
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
-from azure.ai.agents.models import MessageRole, FilePurpose
+from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet
 from dotenv import load_dotenv
 ```
 

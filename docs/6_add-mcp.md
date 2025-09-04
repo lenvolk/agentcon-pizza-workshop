@@ -24,6 +24,11 @@ Before using MCP, install the latest Azure AI Agents SDK that includes MCP suppo
 pip install "azure-ai-agents>=1.2.0b3"
 ```
 
+Add the MCP Tool to the packages
+
+```python
+from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool
+```
 
 ## The Contoso Pizza MCP Server
 
@@ -83,6 +88,31 @@ agent = project_client.agents.create_agent(
     instructions=open("instructions.txt").read(),
     toolset=toolset
 )
+```
+### Change how we fetch All Messages from the Thread  
+
+**Replace this code:**
+
+```python
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, 
+        agent_id=agent.id
+    )  
+```
+
+**With this code:**
+
+```python
+    # Create and process an agent run
+    run = project_client.agents.runs.create(
+        thread_id=thread.id, 
+        agent_id=agent.id, 
+        tool_resources=mcp_tool.resources
+    )
+
+    while run.status in ["queued", "in_progress", "requires_action"]:
+        time.sleep(0.1)
+        run = project_client.agents.runs.get(thread_id=thread.id, run_id=run.id)
 ```
 
 

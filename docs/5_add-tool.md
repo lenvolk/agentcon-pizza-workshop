@@ -21,7 +21,6 @@ We’ll add a tool that, given a **group size** and an **appetite level**, recom
 Create a new file called **`tools.py`** and add the function below:
 
 ```python
-@tool
 def calculate_pizza_for_people(people_count: int, appetite_level: str = "normal") -> str:
     """
     Calculate the number and size of pizzas needed for a group of people.
