@@ -62,8 +62,8 @@ mcp_tool.set_approval_mode("never")
 
 ### Notes
 - **server_label**: a friendly name used in logs/telemetry.
-- **server_url**: the MCP server endpoint (replace <!--@include: ./variables/mcp-url.md-->` with the actual URL).
-- **allowed_tools**: a safety allowlist—only these tools are callable by the agent.
+- **server_url**: the MCP server endpoint (<!--@include: ./variables/mcp-url.md-->`).
+- **allowed_tools**: a safety allowlist - only these tools are callable by the agent.
 - **approval mode**: set to `"never"` here (no human approval prompts). Consider stricter modes for production.
 
 :::warning
