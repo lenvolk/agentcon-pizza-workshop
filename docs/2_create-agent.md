@@ -62,7 +62,7 @@ Create a file named **`.env`** with the following content:
 PROJECT_CONNECTION_STRING="<enter it here>"
 ```
 
-You can find the **connection string** in the Azure AI Foundry portal, on the homepage of your project.  
+You can find the **connection string** in the Azure AI Foundry portal, on the homepage of your project. To go to the homepage click on **Overview** in the Azure AI Foundry portal. The connection string has the following format: https://[name of Foundry resource].services.ai.azure.com/projects/[project name]
 
 ---
 
