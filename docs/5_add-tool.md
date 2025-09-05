@@ -101,7 +101,7 @@ Make sure you `import` the function from `tools.py`:
 from tools import calculate_pizza_for_people
  ```
 
-Create the FunctionTool
+Create the FunctionTool and seed it with a list of functions. In our example this is just the calculate_pizza_for_people function.
 
 ```python
 functions = FunctionTool(functions={calculate_pizza_for_people})
@@ -116,6 +116,8 @@ toolset.add(functions)
 project_client.agents.enable_auto_function_calls(toolset)
 
 ```
+
+Do not forget to add the extra line for enabling the function calling.
 
 And when creating your agent, pass the `toolset` as before:
 

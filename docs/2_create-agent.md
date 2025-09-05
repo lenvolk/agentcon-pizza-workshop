@@ -3,6 +3,7 @@
 In this chapter, we’ll walk through the process of creating your very first AI agent using the **Azure AI Foundry Agent Service**.  
 By the end, you’ll have a simple agent running locally that you can interact with in real time.  
 
+First switch back to the Github codespace environment you created earlier. Make sure the terminal pane is still opened on the **workshop** folder.
 
 ## Login to Azure  
 
@@ -33,7 +34,7 @@ pip install python-dotenv
 
 We’ll now create a simple Python script that defines and runs an agent.  
 
-- Start by creating a new file called: **`agent.py`**
+- Start by creating a new file called: **`agent.py`** in the **workshop** folder
 
 ---
 
@@ -61,7 +62,7 @@ Create a file named **`.env`** with the following content:
 PROJECT_CONNECTION_STRING="<enter it here>"
 ```
 
-You can find the **connection string** in the Azure AI Foundry portal, on the homepage of your project.  
+You can find the **connection string** in the Azure AI Foundry portal, on the homepage of your project. To go to the homepage click on **Overview** in the Azure AI Foundry portal. The connection string has the following format: https://[name of Foundry resource].services.ai.azure.com/projects/[project name]
 
 ---
 
@@ -209,6 +210,7 @@ project_client.agents.delete_agent(agent.id)
 print("Deleted agent")
 ```
 
+Add this code to delete the agent outside of the while True-loop. Otherwise the agent will be deleted immediately after your first interaction.
 
 
 ## Run the Agent  

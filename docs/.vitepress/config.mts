@@ -22,7 +22,7 @@ export default defineConfig({
       {
         text: 'Setup & Resources',
         items: [
-          { text: 'Get an Azure Subscriber', link: '/get-azure' },
+          { text: 'Get an Azure Subscription', link: '/get-azure' },
           { text: 'Developer Environment Setup', link: '/dev-environment' },
           { text: 'Pizza MCP server', link: '/pizza-mcp' }
         ]
