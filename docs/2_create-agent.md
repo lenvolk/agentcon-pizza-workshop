@@ -3,6 +3,7 @@
 In this chapter, we’ll walk through the process of creating your very first AI agent using the **Azure AI Foundry Agent Service**.  
 By the end, you’ll have a simple agent running locally that you can interact with in real time.  
 
+First switch back to the Github codespace environment you created earlier. Make sure the terminal pane is still opened on the **workshop** folder.
 
 ## Login to Azure  
 
