@@ -34,7 +34,7 @@ pip install python-dotenv
 
 We’ll now create a simple Python script that defines and runs an agent.  
 
-- Start by creating a new file called: **`agent.py`**
+- Start by creating a new file called: **`agent.py`** in the **workshop** folder
 
 ---
 
