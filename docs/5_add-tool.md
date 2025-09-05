@@ -117,6 +117,8 @@ project_client.agents.enable_auto_function_calls(toolset)
 
 ```
 
+Do not forget to add the extra line for enabling the function calling.
+
 And when creating your agent, pass the `toolset` as before:
 
 ```python
