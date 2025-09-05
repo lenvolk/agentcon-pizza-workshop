@@ -62,12 +62,12 @@ mcp_tool.set_approval_mode("never")
 
 ### Notes
 - **server_label**: a friendly name used in logs/telemetry.
-- **server_url**: the MCP server endpoint (<!--@include: ./variables/mcp-url.md-->`).
+- **server_url**: the MCP server endpoint (<!--@include: ./variables/mcp-url.md-->).
 - **allowed_tools**: a safety allowlist - only these tools are callable by the agent.
 - **approval mode**: set to `"never"` here (no human approval prompts). Consider stricter modes for production.
 
 :::warning
-⚠️ Make sure you’ve imported the MCP tool class in your file (e.g., `from azure.ai.agents.models import MessageRole, ToolSet, McpTool`).
+⚠️ Make sure you’ve imported the MCP tool class in your file (e.g., `from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool`).
 :::
 
 
@@ -123,6 +123,11 @@ Ask your agent questions that should hit the MCP server tools, for example:
 ```
 Show me the available pizzas.
 ```
+
+```
+What is the price for a pizza hawai.
+```
+
 ```
 Place an order for 2 large pepperoni pizzas.
 ```
