@@ -101,7 +101,7 @@ Make sure you `import` the function from `tools.py`:
 from tools import calculate_pizza_for_people
  ```
 
-Create the FunctionTool
+Create the FunctionTool and seed it with a list of functions. In our example this is just the calculate_pizza_for_people function.
 
 ```python
 functions = FunctionTool(functions={calculate_pizza_for_people})
