@@ -210,6 +210,7 @@ project_client.agents.delete_agent(agent.id)
 print("Deleted agent")
 ```
 
+Add this code to delete the agent outside of the while True-loop. Otherwise the agent will be deleted immediately after your first interaction.
 
 
 ## Run the Agent  
