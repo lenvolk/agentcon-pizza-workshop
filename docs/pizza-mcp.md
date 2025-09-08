@@ -6,10 +6,16 @@ For this workshop we use the Open Source example [Pizza MCP Agent](https://githu
 This project demonstrates how to build AI agents that can interact with real-world APIs using the Model Context Protocol (MCP). It features a complete pizza ordering system with a serverless API, web interfaces, and an MCP server that enables AI agents to browse menus, place orders, and track order status.
 
 The system consists of multiple interconnected services:
-- **Pizza API:** Serverless API for pizza ordering
 - **Pizza MCP server:** MCP server enabling AI agent interactions
 - **Pizza web app:** Live order dashboard, showing real-time pizza orders status
 - **Registration system:** User registration for accessing the pizza ordering system
+
+|  Name | Description |
+|-----------|-------------|
+| Pizza MCP server | [<!--@include: ./variables/mcp-url.md-->](<!--@include: ./variables/mcp-url.md-->)|
+| Pizza web app | [<!--@include: ./variables/pizza-dashboard.md-->](<!--@include: ./variables/pizza-dashboard.md-->)|
+| Registration system | [<!--@include: ./variables/customer-registration.md-->](<!--@include: ./variables/customer-registration.md-->) |
+
 
 ## Overview
 
@@ -45,7 +51,7 @@ First, you need to start the Pizza API and Pizza MCP server locally.
     ```
 2. Ctrl+click to load the MCP Inspector web app from the URL displayed by the app (e.g. http://127.0.0.1:6274)
 3. In the MCP Inspector, set the transport type to **HTTP** and 
-3. Put `http://localhost:3000/mcp` in the URL field and click on the **Connect** button.
+3. Put `<!--@include: ./variables/mcp-url.md-->` in the URL field and click on the **Connect** button.
 4. In the **Tools** tab, select **List Tools**. Click on a tool and select **Run Tool**.
 
 > [!NOTE]

@@ -1,0 +1,1 @@
+https://ambitious-stone-0f6b9760f.2.azurestaticapps.net/

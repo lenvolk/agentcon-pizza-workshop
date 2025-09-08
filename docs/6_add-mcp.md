@@ -115,6 +115,25 @@ agent = project_client.agents.create_agent(
         run = project_client.agents.runs.get(thread_id=thread.id, run_id=run.id)
 ```
 
+## Get a User ID
+
+To order pizza you need a **User ID**. You can get one by navigating to this URL:  
+[<!--@include: ./variables/customer-registration.md-->](<!--@include: ./variables/customer-registration.md-->).
+
+Next, add the following section to your `instructions.txt` file:
+
+```txt
+## User details:
+Name: <YOUR NAME>
+UserId: <USER GUID>
+```
+
+By adding this the agent will make orders using your userid. 
+
+::: tip
+You can see your orders: 
+[<!--@include: ./variables/pizza-dashboard.md-->](<!--@include: ./variables/pizza-dashboard.md-->).
+:::
 
 ## Trying It Out
 

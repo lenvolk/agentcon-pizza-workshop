@@ -1,6 +1,6 @@
 # Setup Azure AI Foundry  
 
-In this section, you will set up the Azure AI Foundry resource and deploy your first model so it’s ready for the workshop.  
+In this section, you will set up the Azure AI Foundry resource and deploy your first model so it’s ready for the workshop. Before you start with the workshop, make sure you have read [how to get Azure](./get-azure) and [setup your dev environment](./dev-environment). 
 
 ## Steps  
 
