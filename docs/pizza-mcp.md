@@ -50,7 +50,7 @@ First, you need to start the Pizza API and Pizza MCP server locally.
     npx -y @modelcontextprotocol/inspector
     ```
 2. Ctrl+click to load the MCP Inspector web app from the URL displayed by the app (e.g. http://127.0.0.1:6274)
-3. In the MCP Inspector, set the transport type to **HTTP** and 
+3. In the MCP Inspector, set the transport type to **SSE** and 
 3. Put `<!--@include: ./variables/mcp-url.md-->` in the URL field and click on the **Connect** button.
 4. In the **Tools** tab, select **List Tools**. Click on a tool and select **Run Tool**.
 
