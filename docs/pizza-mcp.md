@@ -3,6 +3,10 @@
 
 For this workshop we use the Open Source example [Pizza MCP Agent](https://github.com/Azure-Samples/pizza-mcp-agents).
 
+::: Note
+This is only relevant from if you arrive in workshop chapter 6.
+:::
+
 This project demonstrates how to build AI agents that can interact with real-world APIs using the Model Context Protocol (MCP). It features a complete pizza ordering system with a serverless API, web interfaces, and an MCP server that enables AI agents to browse menus, place orders, and track order status.
 
 The system consists of multiple interconnected services:
