@@ -3,7 +3,7 @@
 
 For this workshop we use the Open Source example [Pizza MCP Agent](https://github.com/Azure-Samples/pizza-mcp-agents).
 
-::: Note
+:::Note
 This is only relevant from if you arrive in workshop chapter 6.
 :::
 
