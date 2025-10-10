@@ -67,10 +67,10 @@ toolset.add(function_tool)
 
 ## Add in the MCP support
 
-```python
+```
 mcp_tool = McpTool(
     server_label="contoso_pizza",
-    server_url="<!--@include: ./variables/mcp-url.md-->",
+    server_url="https://ca-pizza-mcp-sc6u2typoxngc.graypond-9d6dd29c.eastus2.azurecontainerapps.io/sse",
     allowed_tools=[
         "get_pizzas",
         "get_pizza_by_id",
@@ -80,15 +80,20 @@ mcp_tool = McpTool(
         "get_orders",
         "get_order_by_id",
         "place_order",
-        "delete_order_by_id"
+        "delete_order_by_id",
     ],
 )
+
+# Set approval mode (valid options depend on SDK: 'never', 'always', 'manual', etc.)
 mcp_tool.set_approval_mode("never")
+
+# Add the MCP tool to the toolset so the agent can use it
+toolset.add(mcp_tool)
 ```
 
 ### Notes
 - **server_label**: a friendly name used in logs/telemetry.
-- **server_url**: the MCP server endpoint (<!--@include: ./variables/mcp-url.md-->).
+- **server_url**: the [MCP server endpoint](./pizza-mcp.md)
 - **allowed_tools**: a safety allowlist - only these tools are callable by the agent.
 - **approval mode**: set to `"never"` here (no human approval prompts). Consider stricter modes for production.
 
