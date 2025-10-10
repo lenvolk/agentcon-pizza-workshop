@@ -18,6 +18,26 @@ When a user asks for something that matches a tool’s purpose, the agent will s
 
 We’ll add a tool that, given a **group size** and an **appetite level**, recommends how many and what size pizzas to order.
 
+## Import the function 
+
+`import` the function from `tools.py` in the imports 
+
+
+```python
+from tools import calculate_pizza_for_people
+```
+This should now look like
+```
+import os
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet
+from tools import calculate_pizza_for_people
+from dotenv import load_dotenv
+```
+
+## Function Calling
+
 Create a new file called **`tools.py`** and add the function below:
 
 ```python
@@ -93,14 +113,17 @@ def calculate_pizza_for_people(people_count: int, appetite_level: str = "normal"
 ## Exposing the Function as a Tool
 
 To let the agent call this function, we define a **function tool** and add it to the existing `ToolSet` (the same way we added File Search).  
-Add the following to your `agent.py` (after your imports and before creating the agent).
+Add the following to your `agent.py`
 
-Make sure you `import` the function from `tools.py`:
-
-```python
-from tools import calculate_pizza_for_people
- ```
-
+Insert this block immediately after:
+```
+toolset = ToolSet()
+toolset.add(file_search)
+```
+and before 
+```
+the agent = project_client.agents.create_agent(... call.
+```
 Create the FunctionTool and seed it with a list of functions. In our example this is just the calculate_pizza_for_people function.
 
 ```python
@@ -116,24 +139,123 @@ toolset.add(functions)
 project_client.agents.enable_auto_function_calls(toolset)
 
 ```
+Do not forget to add the extra import line for enabling the function calling.
 
-Do not forget to add the extra line for enabling the function calling.
+## Trying It Out
 
-And when creating your agent, pass the `toolset` as before:
+## Final Code 
 
-```python
+```
+import os
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet
+from tools import calculate_pizza_for_people
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+
+project_client = AIProjectClient(
+    endpoint=os.environ["PROJECT_CONNECTION_STRING"],
+    credential=DefaultAzureCredential()
+)
+
+# Upload all files in the documents directory
+print(f"Uploading files from ./documents ...")
+file_ids = [
+    project_client.agents.files.upload_and_poll(file_path=os.path.join("./documents", f), purpose=FilePurpose.AGENTS).id
+    for f in os.listdir("./documents")
+    if os.path.isfile(os.path.join("./documents", f))
+]
+print(f"Uploaded {len(file_ids)} files.")
+# Create a vector store with the uploaded files
+vector_store = project_client.agents.vector_stores.create_and_poll(
+    data_sources=[],
+    name="contoso-pizza-store-information"
+)
+print(f"Created vector store, vector store ID: {vector_store.id}")
+# Create a vector store file batch to process the uploaded files
+batch = project_client.agents.vector_store_file_batches.create_and_poll(
+    vector_store_id=vector_store.id,
+    file_ids=file_ids
+)
+file_search = FileSearchTool(vector_store_ids=[vector_store.id])
+toolset = ToolSet()
+toolset.add(file_search)
+
+# Create a FunctionTool for the calculate_pizza_for_people function and add it to the toolset
+# Pass the actual Python function(s) the agent should be able to call. Using a set is fine here.
+function_tool = FunctionTool(functions={calculate_pizza_for_people})
+toolset.add(function_tool)
+
+# Enable automatic function calling for this toolset so the agent can call functions directly
+project_client.agents.enable_auto_function_calls(toolset)
+
 agent = project_client.agents.create_agent(
     model="gpt-4o",
     name="my-agent",
     instructions=open("instructions.txt").read(),
-    toolset=toolset
+    top_p=0.7,
+    temperature=0.7,
+    toolset=toolset  # Add the toolset to the agent
 )
+print(f"Created agent, ID: {agent.id}")
+
+agent = project_client.agents.create_agent(
+    model="gpt-4o",
+    name="pizza-bot",
+    instructions=open("instructions.txt").read(),
+    top_p=0.7,
+    temperature=0.7,
+)
+print(f"Created agent with system prompt, ID: {agent.id}")
+
+thread = project_client.agents.threads.create()
+print(f"Created thread, ID: {thread.id}")
+
+try:
+    while True:
+        # Get the user input
+        user_input = input("You: ")
+
+        # Break out of the loop
+        if user_input.lower() in ["exit", "quit"]:
+            break
+
+        # Add a message to the thread
+        message = project_client.agents.messages.create(
+            thread_id=thread.id,
+            role=MessageRole.USER,
+            content=user_input
+        )
+
+        # Process the agent run
+        run = project_client.agents.runs.create_and_process(
+            thread_id=thread.id,
+            agent_id=agent.id
+        )
+
+        # List messages and print the first text response from the agent
+        messages = project_client.agents.messages.list(thread_id=thread.id)
+        first_message = next(iter(messages), None)
+        if first_message:
+            print(
+                next(
+                    (item["text"]["value"] for item in first_message.content if item.get("type") == "text"),
+                    ""
+                )
+            )
+           
+finally:
+    # Clean up the agent when done
+    project_client.agents.delete_agent(agent.id)
+    print("Deleted agent")
 ```
 
-
-## Trying It Out
+'''
 
 Run your agent and ask a question that should trigger the tool:
+
 
 ```
 We are 7 people with heavy appetite. What pizzas should we order?
