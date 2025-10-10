@@ -26,7 +26,15 @@ We’ll extend our `agent.py` to include the **File Search tool**.
 :::info
 Put this code after the creation of the `AIProjectClient` object. 
 :::
----
+
+You should insert the document upload code **immediately after the creation of the `AIProjectClient` object**, this means placing it **right after this block**:
+
+```python
+project_client = AIProjectClient(
+    endpoint=os.environ["PROJECT_CONNECTION_STRING"],
+    credential=DefaultAzureCredential()
+)
+```
 ### Upload Documents  
 
 The first step is to upload all the files in the `./documents` directory.
