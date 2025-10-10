@@ -26,15 +26,20 @@ In the terminal install the required library
 pip install "azure-ai-agents>=1.2.0b3"
 ```
 
-Add the MCP Tool to the packages in the import section of `agents.py`
+Add the MCP Tool and time to the packages in the import section of `agents.py`
 
 ```python
 from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool
 ```
+```python
+import time
+```
+
 This should now look like 
 
 ```
 import os
+import time
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool
