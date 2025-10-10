@@ -20,14 +20,26 @@ Instead of tightly coupling your agent to each API, you connect **once** to an M
 
 Before using MCP, install the latest Azure AI Agents SDK that includes MCP support:
 
+In the terminal install the required library
+
 ```shell
 pip install "azure-ai-agents>=1.2.0b3"
 ```
 
-Add the MCP Tool to the packages
+Add the MCP Tool to the packages in the import section of `agents.py`
 
 ```python
 from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool
+```
+This should now look like 
+
+```
+import os
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool
+from tools import calculate_pizza_for_people
+from dotenv import load_dotenv
 ```
 
 ## The Contoso Pizza MCP Server
@@ -35,11 +47,25 @@ from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileS
 For Contoso Pizza, the MCP server exposes APIs for pizzas, toppings, and order management.  
 We’ll connect your agent to this server and **allow** a curated set of tools so the agent can fetch live information and place orders.
 
-
-
 ## Create the MCP Tool
 
-Add the following block to your `agent.py` (after you’ve initialized the `project_client` and before creating the agent).
+The MCP tool support need to be intersted between the following block in 'agents.py'
+
+```
+# ...existing code...
+file_search = FileSearchTool(vector_store_ids=[vector_store.id])
+toolset = ToolSet()
+toolset.add(file_search)
+```
+And before 
+```
+# Create a FunctionTool for the calculate_pizza_for_people function and add it to the toolset
+# Pass the actual Python function(s) the agent should be able to call. Using a set is fine here.
+function_tool = FunctionTool(functions={calculate_pizza_for_people})
+toolset.add(function_tool)
+```
+
+## Add in the MCP support
 
 ```python
 mcp_tool = McpTool(
@@ -73,13 +99,36 @@ mcp_tool.set_approval_mode("never")
 
 ## Add the MCP Tool to the Toolset
 
-Add the tool to your existing `toolset` (where you also added File Search and the pizza calculator):
+Add the tool to your existing `toolset` the next block should be added after 
+
+```
+# Add MCP tool so the agent can call Contoso Pizza microservices
+mcp_tool = McpTool(
+    server_label="contoso_pizza",
+    server_url="<!--@include: ./variables/mcp-url.md-->",
+    allowed_tools=[
+        "get_pizzas",
+        "get_pizza_by_id",
+        "get_toppings",
+        "get_topping_by_id",
+        "get_topping_categories",
+        "get_orders",
+        "get_order_by_id",
+        "place_order",
+        "delete_order_by_id"
+    ],
+)
+mcp_tool.set_approval_mode("never")
+```
+
+Add the following after the above to 'agents.py'
 
 ```python
 toolset.add(mcp_tool)
 ```
 
-When you create the agent, keep passing the `toolset`:
+## NOTE
+When you create the agent, the agent keep passing the `toolset` using the toolset=toolset:
 
 ```python
 agent = project_client.agents.create_agent(
@@ -128,6 +177,25 @@ Name: <YOUR NAME>
 UserId: <USER GUID>
 ```
 
+This should now look like 
+
+```
+## Tools & Data Access
+- Use the **Contoso Pizza Store Information Vector Store** to search get information about stores, like address and opening times.
+    - **Tool:** `file_search`
+    - Only return information found in the vector store or uploaded files.
+    - If the information is ambiguous or not found, ask the user for clarification.
+
+## User details:
+Name: <YOUR NAME>
+UserId: <USER GUID>
+
+## Response
+You will interact with users primarily through voice, so your responses should be natural, short and conversational. 
+1. **Only use plain text**
+2. No emoticons, No markup, No markdown, No html, only plain text.
+3. Use short and conversational language.
+```
 By adding this the agent will make orders using your userid. 
 
 ::: tip
