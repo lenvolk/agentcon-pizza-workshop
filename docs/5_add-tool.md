@@ -115,19 +115,31 @@ def calculate_pizza_for_people(people_count: int, appetite_level: str = "normal"
 To let the agent call this function, we define a **function tool** and add it to the existing `ToolSet` (the same way we added File Search).  
 Add the following to your `agent.py`
 
-Insert this block immediately after:
+Create the FunctionTool and seed it with a list of functions. In our example this is just the calculate_pizza_for_people function.
+
+```Python
+# Create a FunctionTool for the calculate_pizza_for_people function and add it to the toolset
+# Pass the actual Python function(s) the agent should be able to call. Using a set is fine here.
+function_tool = FunctionTool(functions={calculate_pizza_for_people})
 ```
+Insert this block immediately after:
+
+```
+file_search = FileSearchTool(vector_store_ids=[vector_store.id])
 toolset = ToolSet()
 toolset.add(file_search)
+
 ```
 and before 
 ```
-the agent = project_client.agents.create_agent(... call.
-```
-Create the FunctionTool and seed it with a list of functions. In our example this is just the calculate_pizza_for_people function.
-
-```python
-functions = FunctionTool(functions={calculate_pizza_for_people})
+agent = project_client.agents.create_agent(
+    model="gpt-4o",
+    name="my-agent",
+    instructions=open("instructions.txt").read(),
+    top_p=0.7,
+    temperature=0.7,
+    toolset=toolset  # Add the toolset to the agent
+)
 ```
 
 Now **add it to your toolset** (together with File Search if you added that in Chapter 3):
@@ -135,11 +147,31 @@ Now **add it to your toolset** (together with File Search if you added that in C
 ```python
 toolset.add(functions)
 
-# Enable automatic function calling 
-project_client.agents.enable_auto_function_calls(toolset)
+```
+
+Now **add Enable Automatic function calling**
+
+Insert this block immediately after:
 
 ```
-Do not forget to add the extra import line for enabling the function calling.
+thread = project_client.agents.threads.create()
+print(f"Created thread, ID: {thread.id}")
+
+```
+and before 
+```
+try:
+    while True:
+        # Get the user input
+        user_input = input("You: ")
+```
+Add this code
+
+```python
+# Enable automatic function calling for this toolset so the agent can call functions directly
+project_client.agents.enable_auto_function_calls(toolset)
+```
+Do not forget to add the extra import lines for enabling the function calling.
 
 ## Trying It Out
 
@@ -188,9 +220,6 @@ toolset.add(file_search)
 function_tool = FunctionTool(functions={calculate_pizza_for_people})
 toolset.add(function_tool)
 
-# Enable automatic function calling for this toolset so the agent can call functions directly
-project_client.agents.enable_auto_function_calls(toolset)
-
 agent = project_client.agents.create_agent(
     model="gpt-4o",
     name="my-agent",
@@ -212,6 +241,9 @@ print(f"Created agent with system prompt, ID: {agent.id}")
 
 thread = project_client.agents.threads.create()
 print(f"Created thread, ID: {thread.id}")
+
+# Enable automatic function calling for this toolset so the agent can call functions directly
+project_client.agents.enable_auto_function_calls(toolset)
 
 try:
     while True:
