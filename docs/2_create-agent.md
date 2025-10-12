@@ -41,7 +41,7 @@ We’ll store secrets (such as your project connection string) in an environment
    PROJECT_CONNECTION_STRING="https://<your-foundry-resource>.services.ai.azure.com/projects/<your-project-name>"
    ```
 
-Replace `https://<your-foundry-resource>.services.ai.azure.com/projects/<your-project-name>` with the actual values from your Azure AI Foundry project.
+Replace `https://<your-foundry-resource>.services.ai.azure.com/api/projects/<your-project-name>` with the actual values from your Azure AI Foundry project.
 
 3. **Where to find your connection string:**
 
