@@ -225,7 +225,7 @@ print("Deleted agent")
 Add this code to delete the agent outside of the while True-loop. Otherwise the agent will be deleted immediately after your first interaction.
 
 ## Complete formatted code
-```
+```python
 import os
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
