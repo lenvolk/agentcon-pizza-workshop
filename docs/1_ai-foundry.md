@@ -38,7 +38,7 @@ In this section, you will set up the Azure AI Foundry resource and deploy your f
 
 ---
 
-5. **Open Azure AI Studio**  
+5. **Open Azure AI Foundry**  
    - Navigate to [AI.Azure.com](https://ai.azure.com).  
    - You should now see the Azure AI Foundry projects linked to your subscription.  
    ![](./public/foundry/003.png)  
