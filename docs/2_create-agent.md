@@ -229,7 +229,7 @@ Add this code to delete the agent outside of the while True-loop. Otherwise the 
 import os
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
-from azure.ai.agents.models import MessageRole
+from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
