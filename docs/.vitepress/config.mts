@@ -20,11 +20,10 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Setup & Resources',
+        text: 'Setup',
         items: [
           { text: 'Get an Azure Subscription', link: '/get-azure' },
-          { text: 'Developer Environment Setup', link: '/dev-environment' },
-          { text: 'Pizza MCP server', link: '/pizza-mcp' }
+          { text: 'Developer Environment Setup', link: '/dev-environment' }
         ]
       },
       {
@@ -36,6 +35,12 @@ export default defineConfig({
           { text: '4. Add knowledge', link: '/4_add-knowledge' },
           { text: '5. Add estimation tool', link: '/5_add-tool' },
           { text: '6. Integrating MCP', link: '/6_add-mcp' },
+        ]
+      },
+      {
+        text: 'Resources',
+        items: [
+          { text: 'Pizza MCP server', link: '/pizza-mcp' }
         ]
       },
       { text: 'License', link: '/license' },
