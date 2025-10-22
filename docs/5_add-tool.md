@@ -18,6 +18,26 @@ When a user asks for something that matches a tool’s purpose, the agent will s
 
 We’ll add a tool that, given a **group size** and an **appetite level**, recommends how many and what size pizzas to order.
 
+## Import the function 
+
+`import` the function from `tools.py` in the imports 
+
+
+```python
+from tools import calculate_pizza_for_people
+```
+This should now look like
+```
+import os
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet
+from tools import calculate_pizza_for_people
+from dotenv import load_dotenv
+```
+
+## Function Calling
+
 Create a new file called **`tools.py`** and add the function below:
 
 ```python
@@ -93,18 +113,33 @@ def calculate_pizza_for_people(people_count: int, appetite_level: str = "normal"
 ## Exposing the Function as a Tool
 
 To let the agent call this function, we define a **function tool** and add it to the existing `ToolSet` (the same way we added File Search).  
-Add the following to your `agent.py` (after your imports and before creating the agent).
-
-Make sure you `import` the function from `tools.py`:
-
-```python
-from tools import calculate_pizza_for_people
- ```
+Add the following to your `agent.py`
 
 Create the FunctionTool and seed it with a list of functions. In our example this is just the calculate_pizza_for_people function.
 
-```python
-functions = FunctionTool(functions={calculate_pizza_for_people})
+```Python
+# Create a FunctionTool for the calculate_pizza_for_people function and add it to the toolset
+# Pass the actual Python function(s) the agent should be able to call. Using a set is fine here.
+function_tool = FunctionTool(functions={calculate_pizza_for_people})
+```
+Insert this block immediately after:
+
+```
+file_search = FileSearchTool(vector_store_ids=[vector_store.id])
+toolset = ToolSet()
+toolset.add(file_search)
+
+```
+and before 
+```
+agent = project_client.agents.create_agent(
+    model="gpt-4o",
+    name="my-agent",
+    instructions=open("instructions.txt").read(),
+    top_p=0.7,
+    temperature=0.7,
+    toolset=toolset  # Add the toolset to the agent
+)
 ```
 
 Now **add it to your toolset** (together with File Search if you added that in Chapter 3):
@@ -112,28 +147,36 @@ Now **add it to your toolset** (together with File Search if you added that in C
 ```python
 toolset.add(functions)
 
-# Enable automatic function calling 
-project_client.agents.enable_auto_function_calls(toolset)
-
 ```
 
-Do not forget to add the extra line for enabling the function calling.
+Now **add Enable Automatic function calling**
 
-And when creating your agent, pass the `toolset` as before:
+Insert this block immediately after:
+
+```
+thread = project_client.agents.threads.create()
+print(f"Created thread, ID: {thread.id}")
+
+```
+and before 
+```
+try:
+    while True:
+        # Get the user input
+        user_input = input("You: ")
+```
+Add this code
 
 ```python
-agent = project_client.agents.create_agent(
-    model="gpt-4o",
-    name="my-agent",
-    instructions=open("instructions.txt").read(),
-    toolset=toolset
-)
+# Enable automatic function calling for this toolset so the agent can call functions directly
+project_client.agents.enable_auto_function_calls(toolset)
 ```
-
+Do not forget to add the extra import lines for enabling the function calling.
 
 ## Trying It Out
 
 Run your agent and ask a question that should trigger the tool:
+
 
 ```
 We are 7 people with heavy appetite. What pizzas should we order?

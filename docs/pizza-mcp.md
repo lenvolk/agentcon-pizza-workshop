@@ -3,6 +3,10 @@
 
 For this workshop we use the Open Source example [Pizza MCP Agent](https://github.com/Azure-Samples/pizza-mcp-agents).
 
+::: danger
+This is only relevant from if you arrive in workshop chapter 6.
+:::
+
 This project demonstrates how to build AI agents that can interact with real-world APIs using the Model Context Protocol (MCP). It features a complete pizza ordering system with a serverless API, web interfaces, and an MCP server that enables AI agents to browse menus, place orders, and track order status.
 
 The system consists of multiple interconnected services:
@@ -50,7 +54,7 @@ First, you need to start the Pizza API and Pizza MCP server locally.
     npx -y @modelcontextprotocol/inspector
     ```
 2. Ctrl+click to load the MCP Inspector web app from the URL displayed by the app (e.g. http://127.0.0.1:6274)
-3. In the MCP Inspector, set the transport type to **HTTP** and 
+3. In the MCP Inspector, set the transport type to **SSE** and 
 3. Put `<!--@include: ./variables/mcp-url.md-->` in the URL field and click on the **Connect** button.
 4. In the **Tools** tab, select **List Tools**. Click on a tool and select **Run Tool**.
 

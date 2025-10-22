@@ -50,11 +50,6 @@ python --version
 ```
 Expected output: **Python 3.10.x**  
 
-```bash
-pip list | grep azure
-```
-Expected output: Installed packages like `azure-identity`, `azure-ai-projects`, `azure-ai-agents`.  
-
 
 ### 5. Start Coding 🚀  
 

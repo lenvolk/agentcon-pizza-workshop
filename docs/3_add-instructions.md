@@ -85,6 +85,17 @@ When customers ask about how much pizza they need for a group, use the pizza cal
 
 Now, update your `agent.py` to load these instructions and set generation parameters (`top_p` and `temperature`):  
 
+Find the code 
+
+```
+agent = project_client.agents.create_agent(
+    model="gpt-4o",
+    name="my-agent"
+)
+print(f"Created agent, ID: {agent.id}")
+```
+Replace this code with 
+
 ```python
 agent = project_client.agents.create_agent(
     model="gpt-4o",
@@ -112,8 +123,6 @@ python agent.py
 Try modifying your `instructions.txt` and rerun the agent. You’ll see how the system instructions directly influence the personality and behavior of the agent.  
 
 You can now chat with your agent directly in the terminal. Type `exit` or `quit` to stop the conversation.  
-
-
 
 
 ## Recap  

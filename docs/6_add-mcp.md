@@ -20,14 +20,31 @@ Instead of tightly coupling your agent to each API, you connect **once** to an M
 
 Before using MCP, install the latest Azure AI Agents SDK that includes MCP support:
 
+In the terminal install the required library
+
 ```shell
 pip install "azure-ai-agents>=1.2.0b3"
 ```
 
-Add the MCP Tool to the packages
+Add the MCP Tool and time to the packages in the import section of `agents.py`
 
 ```python
 from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool
+```
+```python
+import time
+```
+
+This should now look like 
+
+```python
+import os
+import time
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool
+from tools import calculate_pizza_for_people
+from dotenv import load_dotenv
 ```
 
 ## The Contoso Pizza MCP Server
@@ -35,13 +52,29 @@ from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileS
 For Contoso Pizza, the MCP server exposes APIs for pizzas, toppings, and order management.  
 We’ll connect your agent to this server and **allow** a curated set of tools so the agent can fetch live information and place orders.
 
-
-
 ## Create the MCP Tool
 
-Add the following block to your `agent.py` (after you’ve initialized the `project_client` and before creating the agent).
+The MCP tool support need to be intersted between the following block in 'agents.py'
 
 ```python
+thread = project_client.agents.threads.create()
+print(f"Created thread, ID: {thread.id}")
+
+```
+And before 
+```python
+try:
+    while True:
+        # Get the user input
+        user_input = input("You: ")
+```
+
+## Add the MCP Tool to the Toolset
+
+Add the tool to your existing `toolset` the next block should be added after 
+
+```
+# Add MCP tool so the agent can call Contoso Pizza microservices
 mcp_tool = McpTool(
     server_label="contoso_pizza",
     server_url="<!--@include: ./variables/mcp-url.md-->",
@@ -60,26 +93,22 @@ mcp_tool = McpTool(
 mcp_tool.set_approval_mode("never")
 ```
 
+Add the following after the above to 'agents.py'
+
+```python
+toolset.add(mcp_tool)
+```
 ### Notes
 - **server_label**: a friendly name used in logs/telemetry.
-- **server_url**: the MCP server endpoint (<!--@include: ./variables/mcp-url.md-->).
+- **server_url**: the [MCP server endpoint](./pizza-mcp.md)
 - **allowed_tools**: a safety allowlist - only these tools are callable by the agent.
 - **approval mode**: set to `"never"` here (no human approval prompts). Consider stricter modes for production.
 
 :::warning
 ⚠️ Make sure you’ve imported the MCP tool class in your file (e.g., `from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool`).
 :::
-
-
-## Add the MCP Tool to the Toolset
-
-Add the tool to your existing `toolset` (where you also added File Search and the pizza calculator):
-
-```python
-toolset.add(mcp_tool)
-```
-
-When you create the agent, keep passing the `toolset`:
+## NOTE
+When you create the agent, the agent keep passing the `toolset` using the toolset=toolset:
 
 ```python
 agent = project_client.agents.create_agent(
@@ -103,16 +132,15 @@ agent = project_client.agents.create_agent(
 **With this code:**
 
 ```python
-    # Create and process an agent run
-    run = project_client.agents.runs.create(
-        thread_id=thread.id, 
-        agent_id=agent.id, 
-        tool_resources=mcp_tool.resources
-    )
-
-    while run.status in ["queued", "in_progress", "requires_action"]:
-        time.sleep(0.1)
-        run = project_client.agents.runs.get(thread_id=thread.id, run_id=run.id)
+    # Process the agent run
+        run = project_client.agents.runs.create(
+            thread_id=thread.id,
+            agent_id=agent.id,
+            tool_resources=mcp_tool.resources,
+        )
+        while run.status in ["queued", "in_progress", "requires_action"]:
+            time.sleep(0.1)
+            run = project_client.agents.runs.get(thread_id=thread.id, run_id=run.id)
 ```
 
 ## Get a User ID
@@ -128,12 +156,33 @@ Name: <YOUR NAME>
 UserId: <USER GUID>
 ```
 
+This should now look like 
+
+```
+## Tools & Data Access
+- Use the **Contoso Pizza Store Information Vector Store** to search get information about stores, like address and opening times.
+    - **Tool:** `file_search`
+    - Only return information found in the vector store or uploaded files.
+    - If the information is ambiguous or not found, ask the user for clarification.
+
+## User details:
+Name: <YOUR NAME>
+UserId: <USER GUID>
+
+## Response
+You will interact with users primarily through voice, so your responses should be natural, short and conversational. 
+1. **Only use plain text**
+2. No emoticons, No markup, No markdown, No html, only plain text.
+3. Use short and conversational language.
+```
 By adding this the agent will make orders using your userid. 
 
 ::: tip
 You can see your orders: 
 [<!--@include: ./variables/pizza-dashboard.md-->](<!--@include: ./variables/pizza-dashboard.md-->).
 :::
+
+
 
 ## Trying It Out
 
