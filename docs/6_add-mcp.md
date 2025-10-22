@@ -1,79 +1,73 @@
 # Integrating MCP (Model Context Protocol)
 
-In earlier chapters, your agent learned to follow instructions, ground itself in your data (RAG/File Search), and call custom tools.  
-In this final chapter, you’ll connect your agent to an **MCP server** so it can use **external capabilities** (like live menus, toppings, and order management) over a standard protocol.
+In earlier chapters, your agent learned to follow instructions, ground itself in your own data using **File Search (RAG)**, and call custom **tools**.  
+
+In this final chapter, we’ll connect your agent to a live **MCP server** — giving it access to **external capabilities** like live menus, toppings, and order management through a standard, secure protocol.
 
 
-## What is MCP and why use it?
+## What Is MCP and Why Use It?
 
-**MCP (Model Context Protocol)** is an open protocol for connecting AI models to tools, data sources, and services through interoperable **MCP servers**.  
-Instead of tightly coupling your agent to each API, you connect **once** to an MCP server and gain access to all tools it exposes.
+**MCP (Model Context Protocol)** is an open standard for connecting AI agents to external tools, data sources, and services through interoperable **MCP servers**.  
+Instead of integrating with individual APIs, you connect once to an MCP server and automatically gain access to all the tools that server exposes.
 
-**Benefits:**
-- **Interoperability:** a consistent way to expose tools from any service to any MCP‑aware agent.
-- **Separation of concerns:** keep business logic and integrations in the server; keep the agent simple.
-- **Security & governance:** centrally manage what tools are available and how they’re approved.
-- **Scalability:** add or update tools on the server without redeploying your agent code.
+### Benefits of MCP
+
+- 🧩 **Interoperability:** a universal way to expose tools from any service to any MCP-aware agent.  
+- 🔐 **Security & governance:** centrally manage access and tool permissions.  
+- ⚙️ **Scalability:** add or update server tools without changing your agent code.  
+- 🧠 **Simplicity:** keep integrations and business logic in the server; keep your agent focused on reasoning.
 
 
-## Install the MCP Package
+## Install the Azure AI Agents SDK (with MCP support)
 
-Before using MCP, install the latest Azure AI Agents SDK that includes MCP support:
+First, make sure you have the latest SDK version that supports MCP integration.
 
-In the terminal install the required library
-
-```shell
-pip install "azure-ai-agents>=1.2.0b3"
+```bash
+pip install "azure-ai-agents>=1.2.0b5"
 ```
 
-Add the MCP Tool and time to the packages in the import section of `agents.py`
+Then, update your imports in `agent.py` to include MCP-related classes and utilities:
 
 ```python
-from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool
-```
-```python
+from azure.ai.agents.models import McpTool, ToolApproval, ThreadRun, RequiredMcpToolCall, RunHandler
 import time
+from typing import Any
 ```
 
-This should now look like 
+Your full import section should now look like this:
 
 ```python
 import os
 import time
+from typing import Any
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
-from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool
+from azure.ai.agents.models import (
+    MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet,
+    McpTool, ToolApproval, ThreadRun, RequiredMcpToolCall, RunHandler
+)
 from tools import calculate_pizza_for_people
 from dotenv import load_dotenv
 ```
 
+
 ## The Contoso Pizza MCP Server
 
-For Contoso Pizza, the MCP server exposes APIs for pizzas, toppings, and order management.  
-We’ll connect your agent to this server and **allow** a curated set of tools so the agent can fetch live information and place orders.
+For Contoso Pizza, the MCP server exposes APIs for:
+- 🧀 **Pizzas:** available menu items and prices  
+- 🍅 **Toppings:** categories, availability, and details  
+- 📦 **Orders:** create, view, and cancel customer orders  
 
-## Create the MCP Tool
+You’ll connect your agent to this server and grant it **explicit permission** to use a curated list of tools for these operations.
 
-The MCP tool support need to be intersted between the following block in 'agents.py'
+
+## Create and Add the MCP Tool
+
+You’ll define the **MCP Tool** right after creating your `ToolSet`, alongside other tools (like File Search or the Pizza Calculator).
+
+### Add the MCP Tool
 
 ```python
-thread = project_client.agents.threads.create()
-print(f"Created thread, ID: {thread.id}")
-
-```
-And before 
-```python
-try:
-    while True:
-        # Get the user input
-        user_input = input("You: ")
-```
-
-## Add the MCP Tool to the Toolset
-
-Add the tool to your existing `toolset` the next block should be added after 
-
-```
 # Add MCP tool so the agent can call Contoso Pizza microservices
 mcp_tool = McpTool(
     server_label="contoso_pizza",
@@ -87,143 +81,144 @@ mcp_tool = McpTool(
         "get_orders",
         "get_order_by_id",
         "place_order",
-        "delete_order_by_id"
+        "delete_order_by_id",
     ],
 )
 mcp_tool.set_approval_mode("never")
 ```
 
-Add the following after the above to 'agents.py'
+Then, add it to the toolset:
 
 ```python
 toolset.add(mcp_tool)
 ```
-### Notes
-- **server_label**: a friendly name used in logs/telemetry.
-- **server_url**: the [MCP server endpoint](./pizza-mcp.md)
-- **allowed_tools**: a safety allowlist - only these tools are callable by the agent.
-- **approval mode**: set to `"never"` here (no human approval prompts). Consider stricter modes for production.
 
-:::warning
-⚠️ Make sure you’ve imported the MCP tool class in your file (e.g., `from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet, McpTool`).
-:::
-## NOTE
-When you create the agent, the agent keep passing the `toolset` using the toolset=toolset:
+### Parameters Explained
+
+| Parameter | Description |
+| -- | -- |
+| **server_label** | A human-readable name for logs and debugging. |
+| **server_url** | The MCP server endpoint. |
+| **allowed_tools** | A whitelist of MCP tools your agent can call. |
+| **approval_mode** | Defines whether calls require manual approval (`"never"` disables prompts). |
+
+::: tip
+💡 In production, use more restrictive approval modes and scoped tool access.
+::: 
+
+
+## Handling Tool Approvals
+
+When the agent calls an MCP tool, you can intercept and approve these calls dynamically.  
+This gives you visibility and fine-grained control over what’s executed.
+
+Add a **custom run handler**:
 
 ```python
-agent = project_client.agents.create_agent(
-    model="gpt-4o",
-    name="my-agent",
-    instructions=open("instructions.txt").read(),
-    toolset=toolset
+# Custom RunHandler to approve MCP tool calls
+class MyRunHandler(RunHandler):
+    def submit_mcp_tool_approval(
+        self, *, run: ThreadRun, tool_call: RequiredMcpToolCall, **kwargs: Any
+    ) -> ToolApproval:
+        print(f"[RunHandler] Approving MCP tool call: {tool_call.id} for tool: {tool_call.name}")
+        return ToolApproval(
+            tool_call_id=tool_call.id,
+            approve=True,
+            headers=mcp_tool.headers,
+        )
+```
+
+Then, pass the handler when running the agent:
+
+```python
+run = project_client.agents.runs.create_and_process(
+    thread_id=thread.id,
+    agent_id=agent.id,
+    run_handler=MyRunHandler()  # Enables controlled MCP approvals
 )
 ```
-### Change how we fetch All Messages from the Thread  
 
-**Replace this code:**
+::: tip
+🧠 Think of this as a middleware that intercepts all remote tool calls for logging, auditing, or dynamic security rules.
+:::
 
-```python
-    run = project_client.agents.runs.create_and_process(
-        thread_id=thread.id, 
-        agent_id=agent.id
-    )  
-```
 
-**With this code:**
+## Add a User ID
 
-```python
-    # Process the agent run
-        run = project_client.agents.runs.create(
-            thread_id=thread.id,
-            agent_id=agent.id,
-            tool_resources=mcp_tool.resources,
-        )
-        while run.status in ["queued", "in_progress", "requires_action"]:
-            time.sleep(0.1)
-            run = project_client.agents.runs.get(thread_id=thread.id, run_id=run.id)
-```
+To place orders, the agent must identify the customer.
 
-## Get a User ID
+1. **Get your User ID**  
+   Visit this URL to register a customer:  
+   [<!--@include: ./variables/customer-registration.md-->](<!--@include: ./variables/customer-registration.md-->)  
 
-To order pizza you need a **User ID**. You can get one by navigating to this URL:  
-[<!--@include: ./variables/customer-registration.md-->](<!--@include: ./variables/customer-registration.md-->).
-
-Next, add the following section to your `instructions.txt` file:
+2. **Update your `instructions.txt`** with your user details or pass the GUID in chat.
 
 ```txt
 ## User details:
 Name: <YOUR NAME>
-UserId: <USER GUID>
+UserId: <YOUR USER GUID>
 ```
 
-This should now look like 
-
-```
-## Tools & Data Access
-- Use the **Contoso Pizza Store Information Vector Store** to search get information about stores, like address and opening times.
-    - **Tool:** `file_search`
-    - Only return information found in the vector store or uploaded files.
-    - If the information is ambiguous or not found, ask the user for clarification.
-
-## User details:
-Name: <YOUR NAME>
-UserId: <USER GUID>
-
-## Response
-You will interact with users primarily through voice, so your responses should be natural, short and conversational. 
-1. **Only use plain text**
-2. No emoticons, No markup, No markdown, No html, only plain text.
-3. Use short and conversational language.
-```
-By adding this the agent will make orders using your userid. 
-
-::: tip
-You can see your orders: 
-[<!--@include: ./variables/pizza-dashboard.md-->](<!--@include: ./variables/pizza-dashboard.md-->).
-:::
+3. (Optional) View your order dashboard:  
+   [<!--@include: ./variables/pizza-dashboard.md-->](<!--@include: ./variables/pizza-dashboard.md-->)
 
 
 
 ## Trying It Out
 
-Ask your agent questions that should hit the MCP server tools, for example:
+Now it’s time to test your connected agent!  
+Run the agent and try out these prompts:
 
 ```
 Show me the available pizzas.
 ```
 
 ```
-What is the price for a pizza hawai.
+What is the price for a pizza hawai?
 ```
 
 ```
 Place an order for 2 large pepperoni pizzas.
 ```
 
-The agent will call the allowed MCP tools, then summarize their responses in natural language—while still following your **instructions.txt** rules (tone, currency/time conversions, etc.).
+The agent will automatically call the appropriate MCP tools, retrieve data from the live Contoso Pizza API, and respond conversationally — following your **instructions.txt** rules (e.g., tone, local currency, and time zone conversions).
 
 
 
-## Best Practices
+## Best Practices for MCP Integration
 
-- **Principle of least privilege:** only allow tools your agent truly needs.
-- **Observability:** log tool calls and handle failures gracefully.
-- **Versioning:** pin server URLs or versions where possible to avoid breaking changes.
-- **Human‑in‑the‑loop:** consider approval modes other than `"never"` for sensitive actions.
-- **Resilience:** the agent should explain transient errors and suggest retries when remote tools fail.
+- 🔒 **Principle of least privilege:** only allow tools the agent truly needs.  
+- 📜 **Observability:** log all tool calls for traceability and debugging.  
+- 🔁 **Resilience:** handle connection errors gracefully and retry failed tool calls.  
+- 🧩 **Versioning:** pin MCP server versions to prevent breaking changes.  
+- 👩‍💼 **Human-in-the-loop:** use approval modes for sensitive actions (like order placement).
 
 
 
 ## Recap
 
-In this chapter, you:
-- Learned what **MCP** is and why it’s useful.
-- Installed the updated **Azure AI Agents SDK** with MCP support.
-- Configured an **MCP tool** to connect to the Contoso Pizza server.
-- Added it to your **ToolSet** so your agent can fetch menu data and manage orders.
-- Tested the setup with example prompts.
-
----
+In this chapter, you:  
+- Learned what **MCP** is and why it matters for scalable agent design.  
+- Installed the updated **Azure AI Agents SDK** with MCP support.  
+- Connected your agent to the **Contoso Pizza MCP Server**.  
+- Implemented a **custom run handler** for tool approvals.  
+- Tested real-time integration with menu, toppings, and order tools.  
 
 
-🎉 **You’ve completed the workshop!** Your agent now has instructions, knowledge (RAG), custom tools, and MCP‑powered capabilities.
+
+🎉 **Congratulations — you’ve completed the workshop!**  
+Your agent can now:  
+✅ Follow system instructions  
+✅ Access and reason over private data (RAG)  
+✅ Call custom tools  
+✅ Interact with live services via MCP  
+
+Your **Contoso PizzaBot** is now a fully operational, intelligent, and extensible AI assistant.
+
+
+
+## Final code sample
+
+```python 
+<!--@include: ./codesamples/agent_6_mcp.py-->
+```

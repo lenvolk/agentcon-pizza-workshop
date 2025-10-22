@@ -5,6 +5,7 @@ By the end, you’ll have a simple agent running locally that you can interact w
 
 First switch back to the Github codespace environment you created earlier. Make sure the terminal pane is still opened on the **workshop** folder.
 
+
 ## Login to Azure  
 
 Before you can use the Azure AI Foundry Agent Service, you need to sign in to your Azure subscription.  
@@ -15,7 +16,7 @@ Run the following command and follow the on-screen instructions. Use credentials
 az login --use-device-code
 ```
 
----
+
 
 ## Install Required Packages  
 
@@ -24,10 +25,11 @@ Next, install the Python packages needed to work with Azure AI Foundry and manag
 ```shell
 pip install azure-identity
 pip install azure-ai-projects
+pip install azure-ai-agents==1.2.0b5
 pip install jsonref
 pip install python-dotenv
 ```
----
+
 
 ### Create a `.env` File  
 
@@ -37,11 +39,14 @@ We’ll store secrets (such as your project connection string) in an environment
 
 2. **Add the following line to the file:**
 
-   ```env
-   PROJECT_CONNECTION_STRING="https://<your-foundry-resource>.services.ai.azure.com/projects/<your-project-name>"
-   ```
+    ```env
+    PROJECT_CONNECTION_STRING="https://<your-foundry-resource>.services.ai.azure.com/projects/<your-project-name>"
+    ```
 
-Replace `https://<your-foundry-resource>.services.ai.azure.com/api/projects/<your-project-name>` with the actual values from your Azure AI Foundry project.
+Replace `https://<your-foundry-resource>.services.ai.azure.com/api/projects/<your-project-name>` with the actual values from your Azure AI Foundry project. 
+
+![](./public/foundry/foundry-project-string.png)  
+
 
 3. **Where to find your connection string:**
 
@@ -50,21 +55,21 @@ Replace `https://<your-foundry-resource>.services.ai.azure.com/api/projects/<you
    - Click on **Overview**
    - The connection string will be displayed on the homepage of your project
 
----
+
 
 ### 📝 Notes
 
 - Make sure there are **no spaces** around the `=` sign in the `.env` file.
 
----
+
 
 ## Create a Basic Agent  
 
-We’ll now create a simple Python script that defines and runs an agent.  
+We’ll now create a basic Python script that defines and runs an agent.  
 
 - Start by creating a new file called: **`agent.py`** in the **workshop** folder
 
----
+
 
 ### Add Imports to `agent.py`  
 
@@ -86,7 +91,7 @@ Load environment variables into your script by adding this line to `agent.py`:
 load_dotenv(override=True)
 ```
 
----
+
 
 ### Create an `AIProjectClient` Instance  
 
@@ -99,7 +104,7 @@ project_client = AIProjectClient(
 )
 ```
 
----
+
 
 ### Create the Agent  
 
@@ -113,7 +118,7 @@ agent = project_client.agents.create_agent(
 print(f"Created agent, ID: {agent.id}")
 ```
 
----
+
 
 ### Create a Thread  
 
@@ -124,132 +129,16 @@ thread = project_client.agents.threads.create()
 print(f"Created thread, ID: {thread.id}")
 ```
 
----
+
 
 ### Add a Message  
 
 This loop lets you send messages to the agent. Type into the terminal, and the message will be added to the thread.  
 
 ```python
-while True:
-
-    # Get the user input
-    user_input = input("You: ")
-
-    # Break out of the loop
-    if user_input.lower() in ["exit", "quit"]:
-        break
-
-    # Add a message to the thread
-    message = project_client.agents.messages.create(
-        thread_id=thread.id,
-        role=MessageRole.USER, 
-        content=user_input
-    )
-```
-
----
-
-### Create and Process an Agent Run  
-
-The agent processes the conversation thread and generates a response.  
-
-```python
-while True:
-
-    # Get the user input
-    user_input = input("You: ")
-
-    # Break out of the loop
-    if user_input.lower() in ["exit", "quit"]:
-        break
-
-    # Add a message to the thread
-    message = project_client.agents.messages.create(
-        thread_id=thread.id,
-        role=MessageRole.USER, 
-        content=user_input
-    )
-
-    run = project_client.agents.runs.create_and_process(  # [!code focus:4]
-        thread_id=thread.id, 
-        agent_id=agent.id
-    )
-```
-
----
-
-### Fetch All Messages from the Thread  
-
-This retrieves all messages from the thread and prints the agent’s most recent response.  
-
-```python
-while True:
-
-    # Get the user input
-    user_input = input("You: ")
-
-    # Break out of the loop
-    if user_input.lower() in ["exit", "quit"]:
-        break
-
-    # Add a message to the thread
-    message = project_client.agents.messages.create(
-        thread_id=thread.id,
-        role=MessageRole.USER, 
-        content=user_input
-    )
-
-    run = project_client.agents.runs.create_and_process(
-        thread_id=thread.id, 
-        agent_id=agent.id
-    )    
-
-    messages = project_client.agents.messages.list(thread_id=thread.id)  # [!code focus:4]
-    first_message = next(iter(messages), None) 
-    if first_message: 
-        print(next((item["text"]["value"] for item in first_message.content if item.get("type") == "text"), "")) 
-```
-
----
-
-### Delete the Agent When Done  
-
-Once you’re finished, clean up by deleting the agent:  
-
-```python
-project_client.agents.delete_agent(agent.id)
-print("Deleted agent")
-```
-
-Add this code to delete the agent outside of the while True-loop. Otherwise the agent will be deleted immediately after your first interaction.
-
-## Complete formatted code
-```python
-import os
-from azure.ai.projects import AIProjectClient
-from azure.identity import DefaultAzureCredential
-from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet
-from dotenv import load_dotenv
-
-load_dotenv(override=True)
-
-project_client = AIProjectClient(
-    endpoint=os.environ["PROJECT_CONNECTION_STRING"],
-    credential=DefaultAzureCredential()
-)
-
-agent = project_client.agents.create_agent(
-    model="gpt-4o",
-    name="my-agent"
-)
-print(f"Created agent, ID: {agent.id}")
-
-thread = project_client.agents.threads.create()
-print(f"Created thread, ID: {thread.id}")
-
 try:
     while True:
+
         # Get the user input
         user_input = input("You: ")
 
@@ -260,31 +149,53 @@ try:
         # Add a message to the thread
         message = project_client.agents.messages.create(
             thread_id=thread.id,
-            role=MessageRole.USER,
+            role=MessageRole.USER, 
             content=user_input
-        )
+    )
+```
 
-        # Process the agent run
+
+
+### Create and Process an Agent Run  
+
+The agent processes the conversation thread and generates a response.  
+
+```python
         run = project_client.agents.runs.create_and_process(
-            thread_id=thread.id,
+            thread_id=thread.id, 
             agent_id=agent.id
         )
+```
 
-        # List messages and print the first text response from the agent
+
+
+### Fetch All Messages from the Thread  
+
+This retrieves all messages from the thread and prints the agent’s most recent response.  
+
+```python
         messages = project_client.agents.messages.list(thread_id=thread.id)
-        first_message = next(iter(messages), None)
-        if first_message:
-            print(
-                next(
-                    (item["text"]["value"] for item in first_message.content if item.get("type") == "text"),
-                    ""
-                )
-            )
+        first_message = next(iter(messages), None) 
+        if first_message: 
+            print(next((item["text"]["value"] for item in first_message.content if item.get("type") == "text"), "")) 
+```
+
+
+
+### Delete the Agent When Done  
+
+Once you’re finished, clean up by deleting the agent:  
+
+```python
 finally:
     # Clean up the agent when done
     project_client.agents.delete_agent(agent.id)
     print("Deleted agent")
 ```
+
+Add this code to delete the agent outside of the while True-loop. Otherwise the agent will be deleted immediately after your first interaction.
+
+
 
 ## Run the Agent  
 
@@ -323,7 +234,7 @@ Here’s how to fix it:
    - Once assigned, wait a few minutes for the permission to propagate.
    - Retry the operation to create the assistant.
 
----
+
 
 ## Recap  
 
@@ -335,3 +246,10 @@ In this chapter, you have:
 - Created a basic agent with the Azure AI Foundry Agent Service  
 - Started a conversation with a **GPT-4o** model  
 - Cleaned up by deleting the agent when done  
+
+
+## Final code sample
+
+```python 
+<!--@include: ./codesamples/agent_2.py-->
+```

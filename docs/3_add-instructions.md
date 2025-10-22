@@ -94,6 +94,7 @@ agent = project_client.agents.create_agent(
 )
 print(f"Created agent, ID: {agent.id}")
 ```
+
 Replace this code with 
 
 ```python
@@ -134,3 +135,12 @@ In this chapter, you have:
 - Created an agent with a **custom system prompt**  
 - Used an **external instructions file (`instructions.txt`)**  
 - Experimented with **generation settings** (`top_p` and `temperature`)  
+
+
+
+
+## Final code sample
+
+```python 
+<!--@include: ./codesamples/agent_3_instructions.py-->
+```

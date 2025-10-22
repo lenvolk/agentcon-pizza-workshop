@@ -3,31 +3,56 @@
 In the previous chapters, you created a basic agent and gave it instructions through a system prompt.  
 Now it’s time to **make your agent smarter** by grounding it in **your own data**.  
 
+
+
 ## Why Add Knowledge?  
 
-By default, the model only has its built-in training knowledge, which might not include your specific business information.  
-To bridge this gap, we use **Retrieval-Augmented Generation (RAG)** technology.  
+By default, the model only knows what it was trained on - it doesn’t have access to your organization’s private or domain-specific information.  
+To bridge this gap, we’ll use **Retrieval-Augmented Generation (RAG)**.  
 
-- **RAG** allows the model to fetch relevant information from your own data before generating a response.  
-- This ensures the agent’s answers are always **accurate, up to date, and grounded** in real data.  
-- The mechanism we’ll use here is called **File Search**.  
+- **RAG** lets the agent fetch relevant information from your own data before generating a response.  
+- This ensures your agent’s answers are **accurate, up-to-date, and grounded** in real information.  
+- In Azure AI Foundry, we’ll use the **File Search** feature to implement this.  
+
+In this chapter, you’ll use a folder called **`./documents`** that contains information about **Contoso Pizza stores** - such as locations, opening hours, and menus.  
+
+We’ll upload these files to **Azure AI Foundry**, create a **vector store**, and connect that store to the agent using a **File Search tool**.  
 
 
-## File Search and the Documents Directory  
+## Step 1 - Create a Vector Store Script  
 
-In this example, we’ll use a directory called **`./documents`** that contains information about **Contoso Pizza stores** (e.g., addresses, opening hours, menus).  
+We’ll build this step by step to make sure everything is clear.  
+Your goal: create a script that uploads files, creates a vector store, and vectorizes your data for search.  
 
-We’ll upload these documents to Azure AI Foundry, process them into a **vector store**, and then connect that store to the agent using a **File Search tool**.  
+### Part A - Prepare Your Environment  
 
-## Adding File Search to the Agent  
+**Goal:** Load secrets from `.env` and import the necessary SDKs.  
 
-We’ll extend our `agent.py` to include the **File Search tool**.  
+Create a new file called **`add_data.py`** and add:  
 
-:::info
-Put this code after the creation of the `AIProjectClient` object. 
-:::
+```python
+import os
+from dotenv import load_dotenv
 
-You should insert the document upload code **immediately after the creation of the `AIProjectClient` object**, this means placing it **right after this block**:
+# Azure SDK imports
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+from azure.ai.agents.models import FilePurpose
+
+# Load environment variables (expects PROJECT_CONNECTION_STRING in .env)
+load_dotenv(override=True)
+```
+
+**Why:**  
+- `.env` keeps your credentials separate from code.  
+- `AIProjectClient` lets you interact with your Azure AI Foundry project.  
+- `FilePurpose.AGENTS` tells the service these files are for agents.  
+
+### Part B - Connect to Your Azure AI Foundry Project  
+
+**Goal:** Create the project client using your connection string.  
+
+Append this to your script:  
 
 ```python
 project_client = AIProjectClient(
@@ -35,76 +60,137 @@ project_client = AIProjectClient(
     credential=DefaultAzureCredential()
 )
 ```
-### Upload Documents  
 
-The first step is to upload all the files in the `./documents` directory.
+**Why:**  
+This connects your script to your Azure AI Foundry project, allowing file uploads and vector store creation to happen in your workspace.  
+
+
+### Part C - Upload Your Documents  
+
+**Goal:** Upload files from `./documents` and collect their IDs.  
+
+Append this:  
 
 ```python
-# Upload all files in the documents directory
-print(f"Uploading files from ./documents ...")
-file_ids = [
-    project_client.agents.files.upload_and_poll(file_path=os.path.join("./documents", f), purpose=FilePurpose.AGENTS).id
-    for f in os.listdir("./documents")
-    if os.path.isfile(os.path.join("./documents", f))
-]
+DOCS_DIR = "./documents"
+
+if not os.path.isdir(DOCS_DIR):
+    raise FileNotFoundError(
+        f"Documents folder not found at {DOCS_DIR}. "
+        "Create it and add your Contoso Pizza files (PDF, TXT, MD, etc.)."
+    )
+
+print(f"Uploading files from {DOCS_DIR} ...")
+file_ids = []
+for fname in os.listdir(DOCS_DIR):
+    fpath = os.path.join(DOCS_DIR, fname)
+    # skip directories and hidden files like .DS_Store
+    if not os.path.isfile(fpath) or fname.startswith('.'):
+        continue
+    uploaded = project_client.agents.files.upload_and_poll(
+        file_path=fpath,
+        purpose=FilePurpose.AGENTS
+    )
+    file_ids.append(uploaded.id)
+
 print(f"Uploaded {len(file_ids)} files.")
+if not file_ids:
+    raise RuntimeError("No files uploaded. Put files in ./documents and re-run.")
 ```
 
----
+**Why:**  
+Your documents must be uploaded before they can be vectorized and made searchable.  
 
-### Create a Vector Store  
+**Tip:** Keep documents short and relevant (store info, hours, menus). Split very large docs when possible.  
 
-A **vector store** is where the documents are indexed and stored for semantic search.  
+
+### Part D - Create a Vector Store  
+
+**Goal:** Create an empty vector store that will store and index your document embeddings.  
+
+Append:  
 
 ```python
-# Create a vector store with the uploaded files
 vector_store = project_client.agents.vector_stores.create_and_poll(
     data_sources=[],
     name="contoso-pizza-store-information"
 )
-print(f"Created vector store, vector store ID: {vector_store.id}")
+print(f"Created vector store, ID: {vector_store.id}")
 ```
 
----
+**Why:**  
+A vector store is what enables semantic search - it finds text that *means* the same thing as the user’s query, even if the words differ.  
 
-### Process the Files  
 
-We then create a **file batch** to process the uploaded files and add them to the vector store.  
+### Part E - Vectorize Files into the Store  
+
+**Goal:** Add your uploaded files to the vector store and process them for search.  
+
+Append:  
 
 ```python
-# Create a vector store file batch to process the uploaded files
 batch = project_client.agents.vector_store_file_batches.create_and_poll(
     vector_store_id=vector_store.id,
     file_ids=file_ids
 )
+print(f"Created vector store file batch, ID: {batch.id}")
 ```
 
----
+**Why:**  
+This creates vector embeddings for your files so the agent can later retrieve relevant chunks via the File Search tool.  
 
-### Create the File Search Tool  
 
-Next, we create a **File Search tool** that can query the vector store.  
+### Final file
+```python
+<!--@include: ./codesamples/add_data.py-->
+```
+
+### Run the Script  
+
+From your **`workshop/`** directory, run:  
+
+```bash
+python add_data.py
+```
+
+Example output:  
+
+```
+Uploading files from ./documents ...
+Uploaded 19 files.
+Created vector store, ID: vs_ii6H96sVMeQcXICvj7e3DsrK
+Created vector store file batch, ID: vsfb_47c68422adc24e0a915d0d14ca71a3cf
+```
+
+✅ **Copy the vector store ID** - you’ll use it in the next section.  
+
+
+
+## Step 2 - Add the File Search Tool  
+
+Now that you’ve created your vector store, let’s connect it to your agent.  
+
+In `agent.py`, right after you create your `AIProjectClient`, add:  
 
 ```python
-file_search = FileSearchTool(vector_store_ids=[vector_store.id])
+# Create the File Search tool
+vector_store_id = "<INSERT YOUR VECTOR STORE ID HERE>"
+file_search = FileSearchTool(vector_store_ids=[vector_store_id])
 ```
-
----
 
 ### Add the Tool to a Toolset  
 
-Tools are grouped into a **ToolSet**, which is then passed into the agent.  
-
 ```python
+# Create the toolset
 toolset = ToolSet()
 toolset.add(file_search)
 ```
 
----
+
 
 ### Create the Agent with Knowledge  
 
-Finally, we create the agent again, this time adding the toolset.  
+Find the block where you create your agent and modify it to include the toolset:  
 
 ```python
 agent = project_client.agents.create_agent(
@@ -118,135 +204,36 @@ agent = project_client.agents.create_agent(
 print(f"Created agent, ID: {agent.id}")
 ```
 
-## Run the Agent  
 
-Try out the Agent:  
 
-```shell
+## Step 3 - Run the Agent  
+
+Try it out:  
+
+```bash
 python agent.py
 ```
 
-Try and ask questions about the contoso pizza stores.
+Ask questions like:  
+> “Which Contoso Pizza stores are open after 8pm?”  
+> “Where is the nearest Contoso Pizza store?”  
 
-You can now chat with your agent directly in the terminal. Type `exit` or `quit` to stop the conversation.  
+Type `exit` or `quit` to stop the conversation.  
 
 
-## Final Code 
-
-```
-import os
-from azure.ai.projects import AIProjectClient
-from azure.identity import DefaultAzureCredential
-from azure.ai.agents.models import MessageRole, FilePurpose, FunctionTool, FileSearchTool, ToolSet
-from tools import calculate_pizza_for_people
-from dotenv import load_dotenv
-
-load_dotenv(override=True)
-
-project_client = AIProjectClient(
-    endpoint=os.environ["PROJECT_CONNECTION_STRING"],
-    credential=DefaultAzureCredential()
-)
-
-# Upload all files in the documents directory
-print(f"Uploading files from ./documents ...")
-file_ids = [
-    project_client.agents.files.upload_and_poll(file_path=os.path.join("./documents", f), purpose=FilePurpose.AGENTS).id
-    for f in os.listdir("./documents")
-    if os.path.isfile(os.path.join("./documents", f))
-]
-print(f"Uploaded {len(file_ids)} files.")
-# Create a vector store with the uploaded files
-vector_store = project_client.agents.vector_stores.create_and_poll(
-    data_sources=[],
-    name="contoso-pizza-store-information"
-)
-print(f"Created vector store, vector store ID: {vector_store.id}")
-# Create a vector store file batch to process the uploaded files
-batch = project_client.agents.vector_store_file_batches.create_and_poll(
-    vector_store_id=vector_store.id,
-    file_ids=file_ids
-)
-file_search = FileSearchTool(vector_store_ids=[vector_store.id])
-toolset = ToolSet()
-toolset.add(file_search)
-
-# Create a FunctionTool for the calculate_pizza_for_people function and add it to the toolset
-# Pass the actual Python function(s) the agent should be able to call. Using a set is fine here.
-function_tool = FunctionTool(functions={calculate_pizza_for_people})
-toolset.add(function_tool)
-
-agent = project_client.agents.create_agent(
-    model="gpt-4o",
-    name="my-agent",
-    instructions=open("instructions.txt").read(),
-    top_p=0.7,
-    temperature=0.7,
-    toolset=toolset  # Add the toolset to the agent
-)
-print(f"Created agent, ID: {agent.id}")
-
-agent = project_client.agents.create_agent(
-    model="gpt-4o",
-    name="pizza-bot",
-    instructions=open("instructions.txt").read(),
-    top_p=0.7,
-    temperature=0.7,
-)
-print(f"Created agent with system prompt, ID: {agent.id}")
-
-thread = project_client.agents.threads.create()
-print(f"Created thread, ID: {thread.id}")
-
-# Enable automatic function calling for this toolset so the agent can call functions directly
-project_client.agents.enable_auto_function_calls(toolset)
-
-try:
-    while True:
-        # Get the user input
-        user_input = input("You: ")
-
-        # Break out of the loop
-        if user_input.lower() in ["exit", "quit"]:
-            break
-
-        # Add a message to the thread
-        message = project_client.agents.messages.create(
-            thread_id=thread.id,
-            role=MessageRole.USER,
-            content=user_input
-        )
-
-        # Process the agent run
-        run = project_client.agents.runs.create_and_process(
-            thread_id=thread.id,
-            agent_id=agent.id
-        )
-
-        # List messages and print the first text response from the agent
-        messages = project_client.agents.messages.list(thread_id=thread.id)
-        first_message = next(iter(messages), None)
-        if first_message:
-            print(
-                next(
-                    (item["text"]["value"] for item in first_message.content if item.get("type") == "text"),
-                    ""
-                )
-            )
-           
-finally:
-    # Clean up the agent when done
-    project_client.agents.delete_agent(agent.id)
-    print("Deleted agent")
-```
 
 ## Recap  
 
-In this chapter, you have:  
-
-- Learned how **RAG** grounds your agent with real data  
+In this chapter, you:  
+- Learned how **RAG** grounds your agent with your own data  
 - Uploaded files from the `./documents` directory  
-- Created a **vector store** to store and index your files  
-- Built a **File Search tool**  
-- Connected the toolset to your agent so it can answer questions about **Contoso Pizza stores**  
+- Created and populated a **vector store**  
+- Added a **File Search tool** to your agent  
+- Extended your PizzaBot to answer questions about **Contoso Pizza stores**  
 
+
+## Final code sample
+
+```python 
+<!--@include: ./codesamples/agent_4_rag.py-->
+```
