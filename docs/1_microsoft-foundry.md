@@ -75,7 +75,7 @@ In this section, you will set up the Microsoft Foundry resource and deploy your 
 
 In this setup section, you have:  
 - Logged into the Azure Portal  
-- Created an **Azure AI Foundry resource**  
+- Created an **Microsoft Foundry resource**  
 - Deployed a **GPT-4o base model** into your project  
 - Tested the model in the **Playground**  
 

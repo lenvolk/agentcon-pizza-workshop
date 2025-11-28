@@ -3,8 +3,8 @@
 This workshop is part of the **[Global AI Community](https://www.globalai.community)** initiative.  
 Our mission is to connect AI enthusiasts, developers, and professionals worldwide through accessible learning resources, hands-on workshops, and community events.  
 
-The **Azure AI Foundry Workshop** was created to help participants:  
-- Get hands-on experience with Azure AI Foundry  
+The **Microsoft Foundry Workshop** was created to help participants:  
+- Get hands-on experience with Microsoft Foundry  
 - Learn how to build intelligent agents step by step  
 - Understand practical use cases for system prompts, RAG, tool calling, and MCP  
 - Collaborate and share knowledge in an open community setting  
