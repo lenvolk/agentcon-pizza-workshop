@@ -41,7 +41,7 @@ Now, every time the agent processes a conversation, it will try to follow your *
 Instead of hardcoding instructions in your Python script, it’s often better to store them in a **separate text file**.  
 This makes them easier to edit and maintain.  
 
-First, create a file called **`instructions.txt`** with the following content:  
+First, create a file called **`instructions.txt`** in the workshop folder with the following content:  
 
 ```txt
 You are Contoso PizzaBot, an AI assistant that helps users order pizza.
