@@ -29,7 +29,7 @@ export default defineConfig({
       {
         text: 'Workshop',
         items: [
-          { text: '1. Setup Azure AI Foundry', link: '/1_ai-foundry' },
+          { text: '1. Setup Microsoft Foundry', link: '/1_microsoft-foundry' },
           { text: '2. Create your first agent', link: '/2_create-agent' },
           { text: '3. Add instructions', link: '/3_add-instructions' },
           { text: '4. Add knowledge', link: '/4_add-knowledge' },
