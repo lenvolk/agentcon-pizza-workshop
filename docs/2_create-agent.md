@@ -1,6 +1,6 @@
 # Create Your First Agent  
 
-In this chapter, we’ll walk through the process of creating your very first AI agent using the **Azure AI Foundry Agent Service**.  
+In this chapter, we’ll walk through the process of creating your very first AI agent using the **Microsoft Foundry Agent Service**.  
 By the end, you’ll have a simple agent running locally that you can interact with in real time.  
 
 First switch back to the Github codespace environment you created earlier. Make sure the terminal pane is still opened on the **workshop** folder.
@@ -8,9 +8,9 @@ First switch back to the Github codespace environment you created earlier. Make 
 
 ## Login to Azure  
 
-Before you can use the Azure AI Foundry Agent Service, you need to sign in to your Azure subscription.  
+Before you can use the Microsoft Foundry Agent Service, you need to sign in to your Azure subscription.  
 
-Run the following command and follow the on-screen instructions. Use credentials that have access to your Azure AI Foundry resource:  
+Run the following command and follow the on-screen instructions. Use credentials that have access to your Microsoft Foundry resource:  
 
 ```shell
 az login --use-device-code
@@ -20,7 +20,7 @@ az login --use-device-code
 
 ## Install Required Packages  
 
-Next, install the Python packages needed to work with Azure AI Foundry and manage environment variables:  
+Next, install the Python packages needed to work with Microsoft Foundry and manage environment variables:  
 
 ```shell
 pip install azure-identity
@@ -40,17 +40,17 @@ We’ll store secrets (such as your project connection string) in an environment
 2. **Add the following line to the file:**
 
     ```env
-    PROJECT_CONNECTION_STRING="https://<your-foundry-resource>.services.ai.azure.com/projects/<your-project-name>"
+    PROJECT_CONNECTION_STRING="https://<your-foundry-resource>.services.ai.azure.com/api/projects/<your-project-name>"
     ```
 
-Replace `https://<your-foundry-resource>.services.ai.azure.com/api/projects/<your-project-name>` with the actual values from your Azure AI Foundry project. 
+Replace `https://<your-foundry-resource>.services.ai.azure.com/api/projects/<your-project-name>` with the actual values from your Microsoft Foundry project. 
 
 ![](./public/foundry/foundry-project-string.png)  
 
 
 3. **Where to find your connection string:**
 
-   - Go to the **Azure AI Foundry portal**
+   - Go to the **Microsoft Foundry portal**
    - Navigate to your project
    - Click on **Overview**
    - The connection string will be displayed on the homepage of your project
@@ -95,7 +95,7 @@ load_dotenv(override=True)
 
 ### Create an `AIProjectClient` Instance  
 
-This client connects your script to the Azure AI Foundry service using the connection string and your Azure credentials.  
+This client connects your script to the Microsoft Foundry service using the connection string and your Azure credentials.  
 
 ```python
 project_client = AIProjectClient(
@@ -209,13 +209,13 @@ You can now chat with your agent directly in the terminal. Type `exit` or `quit`
 
 ## Debugging 
 
-If you get an error (the principal `*****-****-***-****-*****`) does **not have permission** to create assistants in your Azure AI Foundry project. Specifically, it's missing the **`Microsoft.CognitiveServices/accounts/AIServices/agents/write`** data action.
+If you get an error (the principal `*****-****-***-****-*****`) does **not have permission** to create assistants in your Microsoft Foundry project. Specifically, it's missing the **`Microsoft.CognitiveServices/accounts/AIServices/agents/write`** data action.
 
 Here’s how to fix it:
 
 1. **Go to the Azure Portal**: [https://portal.azure.com](https://portal.azure.com)
 
-2. **Navigate to your Azure AI Foundry resource**:
+2. **Navigate to your Microsoft Foundry resource**:
    - You can find it by searching for the name of your Foundry resource (e.g., `my-foundry-name`).
 
 3. **Open the “Access Control (IAM)” panel**:
@@ -243,7 +243,7 @@ In this chapter, you have:
 - Logged in to Azure  
 - Retrieved a connection string  
 - Separated secrets from code using `.env`  
-- Created a basic agent with the Azure AI Foundry Agent Service  
+- Created a basic agent with the Microsoft Foundry Agent Service  
 - Started a conversation with a **GPT-4o** model  
 - Cleaned up by deleting the agent when done  
 

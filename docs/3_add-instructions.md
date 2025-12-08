@@ -28,7 +28,7 @@ Here’s an example:
 agent = project_client.agents.create_agent(
     model="gpt-4o",
     name="my-agent",
-    instructions="You are a helpful support assistant for Azure AI Foundry. Always provide concise, step-by-step answers."
+    instructions="You are a helpful support assistant for Microsoft Foundry. Always provide concise, step-by-step answers."
 )
 print(f"Created agent with system prompt, ID: {agent.id}")
 ```
@@ -41,7 +41,7 @@ Now, every time the agent processes a conversation, it will try to follow your *
 Instead of hardcoding instructions in your Python script, it’s often better to store them in a **separate text file**.  
 This makes them easier to edit and maintain.  
 
-First, create a file called **`instructions.txt`** with the following content:  
+First, create a file called **`instructions.txt`** in the workshop folder with the following content:  
 
 ```txt
 You are Contoso PizzaBot, an AI assistant that helps users order pizza.

@@ -12,11 +12,11 @@ To bridge this gap, we’ll use **Retrieval-Augmented Generation (RAG)**.
 
 - **RAG** lets the agent fetch relevant information from your own data before generating a response.  
 - This ensures your agent’s answers are **accurate, up-to-date, and grounded** in real information.  
-- In Azure AI Foundry, we’ll use the **File Search** feature to implement this.  
+- In Microsoft Foundry, we’ll use the **File Search** feature to implement this.  
 
 In this chapter, you’ll use a folder called **`./documents`** that contains information about **Contoso Pizza stores** - such as locations, opening hours, and menus.  
 
-We’ll upload these files to **Azure AI Foundry**, create a **vector store**, and connect that store to the agent using a **File Search tool**.  
+We’ll upload these files to **Microsoft Foundry**, create a **vector store**, and connect that store to the agent using a **File Search tool**.  
 
 
 ## Step 1 - Create a Vector Store Script  
@@ -45,10 +45,10 @@ load_dotenv(override=True)
 
 **Why:**  
 - `.env` keeps your credentials separate from code.  
-- `AIProjectClient` lets you interact with your Azure AI Foundry project.  
+- `AIProjectClient` lets you interact with your Microsoft Foundry project.  
 - `FilePurpose.AGENTS` tells the service these files are for agents.  
 
-### Part B - Connect to Your Azure AI Foundry Project  
+### Part B - Connect to Your Microsoft Foundry Project  
 
 **Goal:** Create the project client using your connection string.  
 
@@ -62,7 +62,7 @@ project_client = AIProjectClient(
 ```
 
 **Why:**  
-This connects your script to your Azure AI Foundry project, allowing file uploads and vector store creation to happen in your workspace.  
+This connects your script to your Microsoft Foundry project, allowing file uploads and vector store creation to happen in your workspace.  
 
 
 ### Part C - Upload Your Documents  

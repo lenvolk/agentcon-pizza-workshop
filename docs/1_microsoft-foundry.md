@@ -1,6 +1,6 @@
-# Setup Azure AI Foundry  
+# Setup Microsoft Foundry  
 
-In this section, you will set up the Azure AI Foundry resource and deploy your first model so it’s ready for the workshop. Before you start with the workshop, make sure you have read [how to get Azure](./get-azure) and [setup your dev environment](./dev-environment). 
+In this section, you will set up the Microsoft Foundry resource and deploy your first model so it’s ready for the workshop. Before you start with the workshop, make sure you have read [how to get Azure](./get-azure) and [setup your dev environment](./dev-environment). 
 
 ## Steps  
 
@@ -9,8 +9,8 @@ In this section, you will set up the Azure AI Foundry resource and deploy your f
 
 ---
 
-2. **Create an Azure AI Foundry Resource**  
-   - Navigate to the [Azure AI Foundry](https://portal.azure.com/#view/Microsoft_Azure_ProjectOxford/CognitiveServicesHub/~/overview) service.  
+2. **Create a Microsoft Foundry Resource**  
+   - Navigate to the [Microsoft Foundry](https://portal.azure.com/#view/Microsoft_Azure_ProjectOxford/CognitiveServicesHub/~/overview) service.  
    - Click **Create a resource**.  
    ![](./public/foundry/001.png)  
 
@@ -38,9 +38,9 @@ In this section, you will set up the Azure AI Foundry resource and deploy your f
 
 ---
 
-5. **Open Azure AI Foundry**  
+5. **Open Microsoft Foundry**  
    - Navigate to [AI.Azure.com](https://ai.azure.com).  
-   - You should now see the Azure AI Foundry projects linked to your subscription.  
+   - You should now see the Microsoft Foundry projects linked to your subscription.  
    ![](./public/foundry/003.png)  
    - Click on your project, e.g. **Pizza-Workshop**.  
 
@@ -75,7 +75,7 @@ In this section, you will set up the Azure AI Foundry resource and deploy your f
 
 In this setup section, you have:  
 - Logged into the Azure Portal  
-- Created an **Azure AI Foundry resource**  
+- Created a **Microsoft Foundry resource**  
 - Deployed a **GPT-4o base model** into your project  
 - Tested the model in the **Playground**  
 
