@@ -1,13 +1,21 @@
 # Get an Azure Subscription
 
-In case you do not have an Azure Subscription you can use to complete the challenges, 
-you can follow the instructions below and get an Azure Subscription with 10$ credits valid for 5 days.
+In case you do not have an Azure Subscription.
+
+## Azure Free trial
+
+You can get a 200$ subscription if you [sign up for Azure](https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account).
+
+
+## Azure Classroom
 
 ::: tip NOTE
-This offer only applies for events provided by the Global AI Community on events like AgentCon
+This offer only applies for events provided by the Global AI Community on events like AgentCon.
 :::
 
-## Step 1 - Request subscription
+You can follow the instructions below and get an Azure Subscription with 10$ credits valid for 5 days.
+
+### Step 1 - Request subscription
 - Navigate to: [https://aka.ms/JoinEduLab](https://aka.ms/JoinEduLab)
 - Sign in with a Microsoft or GitHub account
 
@@ -16,7 +24,7 @@ This offer only applies for events provided by the Global AI Community on events
 - Enter <!--@include: ./variables/azure-code.md--> the `invite code` and `click redeem`
 - Wait for the email below to arrive
 
-## Step 2 - Activate subscription
+### Step 2 - Activate subscription
 - Look out for the email below arriving in your mailbox.
 ![You have a request to take ownership of an Azure subscription](./public/azure-classroom/002.png)
 - Click on the button `Accept Ownership`
@@ -33,7 +41,7 @@ This offer only applies for events provided by the Global AI Community on events
 - Click `Accept`
 - Your subscription is being created
 
-## Step 3 - Happy hacking
+### Step 3 - Happy hacking
 - It can take a few minutes to create your subscription.
 ![](./public/azure-classroom/007.png)
 
@@ -45,9 +53,9 @@ This offer only applies for events provided by the Global AI Community on events
 
 Happy hacking!
 
-## Tips & Tricks
+### Tips & Tricks
 
-### Unable to find your subscription?
+#### Unable to find your subscription?
 - Your subscription is created in the Tenant/Directory: "Global AI Community"
 - Sometimes you need to switch tenants, before you see the subscription. [Click here](https://portal.azure.com/#settings/directory) to switch Directory.
 - Sometimes you need to adjust your [Subscription filter](https://portal.azure.com/#view/Microsoft_Azure_Billing/SubscriptionsBladeV2) for the subscription to show up.
