@@ -1,1 +1,1 @@
-<Badge type="tip">**Unavailable**</Badge>
+<Badge type="tip">**ZUPIMY**</Badge>
