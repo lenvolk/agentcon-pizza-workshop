@@ -19,7 +19,10 @@ RUN if command -v apt-get >/dev/null 2>&1; then \
     fi
 
 # Install uv (provides `uv` and `uvx`)
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh -s -- --install-dir /usr/local/bin
+# The installer no longer supports `--install-dir`; it installs to $XDG_BIN_HOME / $HOME/.local/bin.
+ENV XDG_BIN_HOME=/usr/local/bin
+ENV UV_NO_MODIFY_PATH=1
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install .NET SDK (some MCP servers/tools depend on it)
 RUN curl -LsSf https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh \
