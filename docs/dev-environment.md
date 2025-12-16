@@ -50,6 +50,13 @@ python --version
 ```
 Expected output: **Python 3.10.x**  
 
+If you plan to use MCP servers configured in `.vscode/mcp.json`, also verify the common MCP runners are available:
+
+```bash
+uvx --version
+npx --version
+```
+
 
 ### 5. Start Coding 🚀  
 
@@ -65,3 +72,26 @@ In this setup section, you have:
 - Opened the `workshop/` directory as your working folder  
 
 You’re now ready to build the **PizzaBot agent** step by step. 🍕🤖  
+
+## Troubleshooting
+
+### MCP runner commands not found
+
+If you see errors like `uvx: command not found` or `dnx: command not found` when starting an MCP server, it usually means the devcontainer image doesn’t have the required runner installed.
+
+- This workshop repo is set up to use MCP servers that run via `uvx` (Python) or `npx` (Node).
+- If you added a server from an MCP gallery that references `dnx`, switch to a server config that uses `uvx`/`npx`, or install the missing runner.
+
+If you see `npx: command not found`, install Node.js + npm (which provides `npx`) and then retry:
+
+```bash
+# Debian/Ubuntu-based containers
+sudo apt-get update && sudo apt-get install -y nodejs npm
+
+# Alpine-based containers
+sudo apk add --no-cache nodejs npm
+
+npx --version
+```
+
+If you’re using Codespaces and you changed the devcontainer definition, run **Codespaces: Rebuild Container** so the new tools get installed.
