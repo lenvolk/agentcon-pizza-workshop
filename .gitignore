@@ -4,3 +4,21 @@ node_modules/
 .venv/
 workshop/.env
 workshop/__pycache__
+
+# Secrets / local config
+.env
+.env.*
+!.env.example
+*.local
+*.secrets
+
+# Azure local auth/config (defense in depth)
+.azure/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Logs
+*.log

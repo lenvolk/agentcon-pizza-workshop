@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VOLK Pizza</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="header">
+        <div class="container header__inner">
+          <div class="brand" aria-label="VOLK Pizza">
+            <span class="brand__mark" aria-hidden="true">V</span>
+            <span class="brand__text">VOLK Pizza</span>
+          </div>
+
+          <nav class="nav" aria-label="Primary">
+            <a href="#" class="nav__link">Order Now</a>
+            <a href="#" class="nav__link">Menu</a>
+            <a href="#" class="nav__link">Deals</a>
+            <a href="#" class="nav__link">Tracker</a>
+          </nav>
+
+          <div class="header__actions">
+            <button class="pill" type="button" aria-label="Choose location">
+              Choose your location
+            </button>
+            <button class="pill pill--ghost" type="button">Sign In</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="container">
+        <section id="landing" class="landing" aria-label="Welcome">
+          <div class="hero" role="region" aria-label="Start your order">
+            <div class="hero__top">
+              <div class="hero__headline">START YOUR ORDER</div>
+              <div class="hero__toggle" role="group" aria-label="Order type">
+                <button class="toggle toggle--active" type="button">Delivery</button>
+                <span class="toggle__or" aria-hidden="true">or</span>
+                <button class="toggle" type="button">Carryout</button>
+              </div>
+            </div>
+
+            <div class="hero__grid">
+              <div class="hero__banner" aria-hidden="true">
+                <div class="banner__card">
+                  <div class="banner__kicker">Mix & Match</div>
+                  <div class="banner__title">Chat your way to the perfect pie.</div>
+                  <div class="banner__body">
+                    Ask about menus, toppings, and orders. We'll help you build a great choice.
+                  </div>
+                  <div class="banner__actions">
+                    <button id="welcomeBtn" class="button button--primary" type="button">
+                      Welcome
+                    </button>
+                    <div
+                      id="welcomeStatus"
+                      class="status"
+                      role="status"
+                      aria-live="polite"
+                    ></div>
+                  </div>
+                </div>
+
+                <div class="banner__art" aria-hidden="true">
+                  <div class="art art--slice" title="Fresh slice"></div>
+                  <div class="art art--pep" title="Pepperoni"></div>
+
+                  <svg
+                    class="monkey"
+                    viewBox="0 0 220 220"
+                    role="img"
+                    aria-label="A friendly monkey selling pizza"
+                  >
+                    <defs>
+                      <linearGradient id="cap" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#2a6fca" />
+                        <stop offset="1" stop-color="#1e5aa6" />
+                      </linearGradient>
+                      <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#b42318" />
+                        <stop offset="1" stop-color="#8f1d14" />
+                      </linearGradient>
+                    </defs>
+
+                    <!-- hat -->
+                    <path
+                      d="M62 58c8-26 34-42 60-42s52 16 60 42c-18-10-38-15-60-15s-42 5-60 15z"
+                      fill="url(#cap)"
+                    />
+                    <rect x="60" y="58" width="124" height="16" rx="8" fill="#0b2d57" opacity="0.9" />
+                    <text x="122" y="71" text-anchor="middle" font-size="10" fill="#fff" font-weight="800">
+                      VOLK
+                    </text>
+
+                    <!-- head -->
+                    <circle cx="110" cy="106" r="56" fill="#6b3f2a" />
+                    <circle cx="110" cy="116" r="38" fill="#f1c8a4" />
+                    <!-- ears -->
+                    <circle cx="58" cy="112" r="18" fill="#6b3f2a" />
+                    <circle cx="162" cy="112" r="18" fill="#6b3f2a" />
+                    <circle cx="58" cy="112" r="10" fill="#f1c8a4" />
+                    <circle cx="162" cy="112" r="10" fill="#f1c8a4" />
+                    <!-- eyes -->
+                    <circle cx="92" cy="100" r="8" fill="#0f172a" />
+                    <circle cx="128" cy="100" r="8" fill="#0f172a" />
+                    <circle cx="95" cy="97" r="3" fill="#fff" opacity="0.9" />
+                    <circle cx="131" cy="97" r="3" fill="#fff" opacity="0.9" />
+                    <!-- smile -->
+                    <path d="M94 124c8 10 24 10 32 0" fill="none" stroke="#8f1d14" stroke-width="5" stroke-linecap="round" />
+
+                    <!-- body -->
+                    <path d="M58 196c10-34 34-56 52-56h0c18 0 42 22 52 56" fill="url(#shirt)" />
+                    <path d="M86 148h48" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity="0.85" />
+                    <text x="110" y="171" text-anchor="middle" font-size="12" fill="#fff" font-weight="900">
+                      PIZZA
+                    </text>
+
+                    <!-- pizza in hand -->
+                    <path d="M146 154c16-6 32 6 36 20l-52 18c-6-12 0-32 16-38z" fill="#f2c14e" />
+                    <path d="M137 174l44-15" stroke="#e9b340" stroke-width="8" stroke-linecap="round" />
+                    <circle cx="162" cy="170" r="5" fill="#b42318" />
+                    <circle cx="171" cy="178" r="5" fill="#b42318" />
+                    <circle cx="152" cy="181" r="5" fill="#b42318" />
+                    <circle cx="164" cy="189" r="5" fill="#b42318" />
+                  </svg>
+                </div>
+              </div>
+
+              <aside class="hero__aside" aria-label="Quick links">
+                <div class="aside__card">
+                  <div class="aside__title">Need help picking?</div>
+                  <div class="aside__body">
+                    Click <strong>Welcome</strong> to start a chat with the VOLK PizzaBot.
+                  </div>
+                </div>
+                <div class="aside__card" aria-label="Setup required">
+                  <div class="aside__title">First-time setup</div>
+                  <div class="aside__body">
+                    Chat requires an Azure project connection string.
+                    <div class="aside__steps" role="list">
+                      <div role="listitem">1) Create <code>.env</code> from <code>.env.example</code></div>
+                      <div role="listitem">2) Set <code>PROJECT_CONNECTION_STRING</code> in <code>.env</code></div>
+                      <div role="listitem">3) In Codespaces, run <code>az login --use-device-code</code></div>
+                      <div role="listitem">4) Restart the server</div>
+                    </div>
+                    <div class="aside__note">
+                      Tip: <code>.env</code> is gitignored so secrets won't be committed.
+                    </div>
+                  </div>
+                </div>
+                <div class="aside__card">
+                  <div class="aside__title">Popular prompts</div>
+                  <div class="aside__body">
+                    “Show me veggie pizzas”<br />
+                    “What toppings are available?”<br />
+                    “Place an order for 3 people”
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+
+          <div class="tiles" aria-label="Promotions">
+            <div class="tile">
+              <div class="tile__title">Specialty Pizzas</div>
+              <div class="tile__body">Browse crowd favorites, then ask the bot for recommendations.</div>
+              <div class="tile__action">Explore</div>
+            </div>
+            <div class="tile">
+              <div class="tile__title">Carryout Deals</div>
+              <div class="tile__body">Want something quick? Tell the bot your budget and preferences.</div>
+              <div class="tile__action">See deals</div>
+            </div>
+            <div class="tile">
+              <div class="tile__title">Track an Order</div>
+              <div class="tile__body">Ask the bot for status updates once you've placed an order.</div>
+              <div class="tile__action">Track</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="chat" class="chat" hidden aria-label="Chat">
+          <div class="chat__header">
+            <div class="chat__title">Chat</div>
+            <div class="chat__right">
+              <div class="chat__status">
+                Status: <span id="sessionStatus">starting</span>
+              </div>
+              <button id="endChatBtn" class="button button--ghost" type="button">
+                End chat
+              </button>
+            </div>
+          </div>
+
+          <div id="errorPanel" class="error" hidden>
+            <div class="error__title">Something went wrong</div>
+            <div class="error__message" id="errorMessage"></div>
+            <div class="error__hint" id="errorHint"></div>
+          </div>
+
+          <ol id="messages" class="messages" aria-label="Messages"></ol>
+
+          <form id="chatForm" class="composer" autocomplete="off">
+            <input
+              id="chatInput"
+              class="composer__input"
+              type="text"
+              placeholder="Type a message..."
+              maxlength="5000"
+              required
+            />
+            <button class="button button--primary" type="submit">Send</button>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
